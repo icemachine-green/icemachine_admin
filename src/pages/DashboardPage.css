@@ -1,3 +1,154 @@
+/* =========================
+   전체 컨테이너
+========================= */
 .dashboard-container {
-	background-color: #F3F2F4;
+  height: 100%;
+  padding: 32px;
+  background-color: #F3F2F4;
+}
+
+/* =========================
+   타이틀 & 인사말
+========================= */
+.dashboard-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.dashboard-greeting {
+  font-size: 25px;
+  margin-bottom: 40px;
+}
+
+/* =========================
+   통계 카드 영역
+========================= */
+.dashboard-stats {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.stat-card {
+  background-color: #ffffff;
+  border-radius: 14px;
+  padding: 20px 0;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+}
+
+.stat-card strong {
+  display: block;
+  font-size: 40px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.stat-card span {
+  font-size: 25px;
+  font-weight: 700;
+}
+
+/* 상태 색상 */
+.blue { color: #4F6BED; }
+.purple { color: #9B6EF3; }
+.green { color: #3AA76D; }
+.orange { color: #E68A2E; }
+.red { color: #E14B4B; }
+
+/* =========================
+   테이블 래퍼
+========================= */
+.dashboard-table-wrapper {
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+/* 테이블 상단 */
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.table-header h2 {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.table-header span {
+  font-size: 18px;
+  color: #555;
+}
+
+/* =========================
+   Grid 기반 테이블
+========================= */
+.dashboard-table {
+  display: flex;
+  flex-direction: column;
+}
+
+.table-row {
+  display: grid;
+  grid-template-columns: 
+    1fr        /* 고객명 */
+    1.2fr      /* 매장명 */
+    1.4fr      /* 서비스 타입 */
+    1.2fr      /* 예약 시작 날짜 */
+    1fr        /* 기사명 */
+    0.8fr;     /* 상태 */
+  align-items: center;
+  padding: 14px 0;
+  border-bottom: 1px solid #E6E6E6;
+  font-size: 14px;
+}
+
+.table-row:last-child {
+  border-bottom: none;
+}
+
+.table-head {
+  font-weight: 700;
+  color: #777;
+  border-bottom: 2px solid #D9D9D9;
+}
+
+/* =========================
+   상태 배지
+========================= */
+.status-badge {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 14px;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+  color: #fff;
+}
+
+/* 상태별 색상 */
+.status-badge.작업중 {
+  background-color: #3AA76D;
+}
+
+.status-badge.취소 {
+  background-color: #E14B4B;
+}
+
+.status-badge.접수됨 {
+  background-color: #4F6BED;
+}
+
+.status-badge.확정됨 {
+  background-color: #9B6EF3;
+}
+
+.status-badge.완료됨 {
+  background-color: #E68A2E;
 }
