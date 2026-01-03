@@ -2,18 +2,43 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import App from "../App.jsx";
 import MainLayout from "../components/layouts/MainLayout.jsx";
 import DashboardPage from "../pages/DashboardPage.jsx";
+import ServicePolicyPage from "../pages/ServicePolicyPage.jsx";
+import ReservationManagePage from "../pages/ReservationManagePage.jsx";
+import DriverManagePage from "../pages/DriverManagePage.jsx";
+import CustomerManagePage from "../pages/CustomerManagePage.jsx";
+import AdminAccountPage from "../pages/AdminAccountPage.jsx";
 
 const router = createBrowserRouter([
   {
-    element: <App />,   // 좌측 사이드바 + main 자리
+    element: <App />,  
     children: [
       {
         element: <MainLayout />, // 여기서 Header + Outlet 구조
         children: [
           {
-            path: "/",            // 루트 경로
-            element: <DashboardPage /> // Header 밑에 렌더링될 페이지
+            path: "/",           
+            element: <DashboardPage /> 
           },
+          {
+            path: "/service",           
+            element: <ServicePolicyPage /> 
+          },
+          {
+            path: "/reservation",            
+            element: <ReservationManagePage />
+          },
+          {
+            path: "/driver",           
+            element: <DriverManagePage />
+          },
+          {
+            path: "/customer",            
+            element: <CustomerManagePage /> 
+          },
+          {
+            path: "/admin",           
+            element: <AdminAccountPage /> 
+          },          
           // 앞으로 다른 페이지가 추가되면 이 배열에 추가합니다.
           // 예: { path: '/login', element: <LoginPage /> }
         ]
