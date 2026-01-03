@@ -1,0 +1,28 @@
+/* App.css */
+body, html, #root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+}
+
+.App {
+  display: flex;          /* 좌우 배치 가능 */
+  min-height: 100vh;      /* 화면 높이만큼 */
+  min-width: 100vw;
+}
+
+/* 사이드바 스타일 */
+.sidebar-container {
+  width: 300px;           /* 원하는 사이드바 너비 */
+  background-color: #324053;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* main 영역 스타일 */
+main {
+  flex: 1;                /* 남은 공간 모두 차지 */
+  background-color: #ecd8ff;
+  box-sizing: border-box;
+}
