@@ -8,15 +8,17 @@
 }
 
 /* =========================
-   타이틀 & 인사말
+   설명 문구
 ========================= */
 .adminaccount-greeting {
 	font-size: 25px;
+	font-weight: 600;
 	margin-bottom: 40px;
+	color: #2f2f2f;
 }
 
 /* =========================
-   테이블 래퍼
+   흰색 박스
 ========================= */
 .adminaccount-table-wrapper {
 	background-color: #ffffff;
@@ -24,13 +26,103 @@
 	padding: 24px;
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 	height: 584px;
-	/*특별한 일이 없을 시 표 흰 박스 높이 584px 고정값*/
 }
 
 /* =========================
-   Grid 기반 테이블
+   내부 레이아웃
 ========================= */
 .adminaccount-table {
 	display: flex;
 	flex-direction: column;
+	height: 100%;
+}
+
+/* =========================
+   Grid 테이블 행
+========================= */
+.adminaccount-row {
+	display: grid;
+	grid-template-columns:
+		0.7fr
+		/* 관리자번호 */
+		1.3fr
+		/* 관리자 아이디 */
+		1fr
+		/* 관리자 이름 */
+		1fr
+		/* 역할 */
+		1.2fr
+		/* 계정 활성화 여부 */
+		1.6fr
+		/* 마지막 로그인 시간 */
+		1.2fr;
+	/* 마지막 로그인 IP */
+	align-items: center;
+	padding: 14px 0;
+	border-bottom: 1px solid #E6E6E6;
+	font-size: 14px;
+	text-align: center;
+	color: #333;
+}
+
+.adminaccount-row:last-child {
+	border-bottom: none;
+}
+
+/* =========================
+   테이블 헤더
+========================= */
+.adminaccount-head {
+	font-weight: 600;
+	color: #555;
+	background-color: #f6f6f7;
+	border-bottom: 1px solid #D9D9D9;
+}
+
+/* =========================
+   상태 배지
+========================= */
+.status-badge {
+	display: inline-block;
+	padding: 6px 12px;
+	border-radius: 12px;
+	font-size: 13px;
+	font-weight: 600;
+	color: #fff;
+}
+
+.greencolor {
+	background-color: #3AA76D;
+}
+
+.graycolor {
+	background-color: #9E9E9E;
+}
+
+/* =========================
+   페이지네이션
+========================= */
+.pagination {
+	margin-top: auto;
+	padding-top: 20px;
+	display: flex;
+	justify-content: center;
+	gap: 6px;
+}
+
+.page-btn {
+	min-width: 32px;
+	height: 32px;
+	border-radius: 6px;
+	border: 1px solid #ddd;
+	background-color: #fff;
+	font-size: 13px;
+	color: #555;
+	cursor: pointer;
+}
+
+.page-btn.active {
+	background-color: #2f2f2f;
+	color: #fff;
+	border-color: #2f2f2f;
 }
