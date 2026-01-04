@@ -8,15 +8,17 @@
 }
 
 /* =========================
-   타이틀 & 인사말
+   타이틀 & 설명 문구
 ========================= */
 .reservationmanage-greeting {
 	font-size: 25px;
+	font-weight: 600;
 	margin-bottom: 40px;
+	color: #2f2f2f;
 }
 
 /* =========================
-   테이블 래퍼
+   흰 박스
 ========================= */
 .reservationmanage-table-wrapper {
 	background-color: #ffffff;
@@ -24,13 +26,123 @@
 	padding: 24px;
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 	height: 584px;
-	/*특별한 일이 없을 시 표 흰 박스 높이 584px 고정값*/
 }
 
 /* =========================
-   Grid 기반 테이블
+   내부 레이아웃
 ========================= */
 .reservationmanage-table {
 	display: flex;
 	flex-direction: column;
+	height: 100%;
+}
+
+/* =========================
+   테이블
+========================= */
+.reservation-table {
+	width: 100%;
+	border-collapse: collapse;
+	table-layout: fixed;
+}
+
+.reservation-table thead {
+	background-color: #f6f6f7;
+}
+
+.reservation-table th {
+	padding: 14px 12px;
+	font-size: 14px;
+	font-weight: 600;
+	color: #555;
+	border-bottom: 1px solid #ddd;
+	text-align: center;
+}
+
+.reservation-table td {
+	padding: 14px 12px;
+	font-size: 14px;
+	color: #333;
+	border-bottom: 1px solid #eee;
+	text-align: center;
+
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+/* =========================
+   tbody 스크롤
+========================= */
+.reservation-table tbody {
+	display: block;
+	max-height: 420px;
+	overflow-y: auto;
+}
+
+.reservation-table thead,
+.reservation-table tbody tr {
+	display: table;
+	width: 100%;
+	table-layout: fixed;
+}
+
+/* =========================
+   상태 뱃지 (공통 컬러 시스템)
+========================= */
+.status-badge {
+	display: inline-block;
+	padding: 6px 12px;
+	border-radius: 12px;
+	font-size: 13px;
+	font-weight: 600;
+	color: #fff;
+}
+
+.greencolor {
+	background-color: #3AA76D;
+}
+
+.redcolor {
+	background-color: #E14B4B;
+}
+
+.bluecolor {
+	background-color: #4F6BED;
+}
+
+.orangecolor {
+	background-color: #E68A2E;
+}
+
+.purplecolor {
+	background-color: #9B6EF3;
+}
+
+/* =========================
+   페이지네이션
+========================= */
+.pagination {
+	margin-top: auto;
+	padding-top: 20px;
+	display: flex;
+	justify-content: center;
+	gap: 6px;
+}
+
+.page-btn {
+	min-width: 32px;
+	height: 32px;
+	border-radius: 6px;
+	border: 1px solid #ddd;
+	background-color: #fff;
+	font-size: 13px;
+	color: #555;
+	cursor: pointer;
+}
+
+.page-btn.active {
+	background-color: #2f2f2f;
+	color: #fff;
+	border-color: #2f2f2f;
 }
