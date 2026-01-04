@@ -2,9 +2,9 @@
    메인 레이아웃
 ========================= */
 .main-layout {
-  flex: 1;                  /* 사이드바 제외한 영역 차지 */
+  flex: 1;
   display: flex;
-  flex-direction: column;   /* 헤더 위 / 콘텐츠 아래 */
+  flex-direction: column;
   min-height: 100vh;
 }
 
@@ -12,20 +12,19 @@
    헤더
 ========================= */
 .header {
-  height: 100px;            /* 고정 헤더 높이 */
+  height: 100px;
   background-color: #ffffff;
   color: #000;
 
   display: flex;
   align-items: center;
-  justify-content: space-between; /* 좌우 분리 */
+  justify-content: space-between;
 
   padding: 0 55px;
   box-sizing: border-box;
   border-bottom: 1px solid #e5e5e5;
 
-  box-shadow:
-   0 2px 8px rgba(0, 0, 0, 0.06); /* 헤더 영역 아래 그림자 효과 */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
 .header h1 {
@@ -50,7 +49,6 @@
   gap: 20px;
 }
 
-/* 아이콘 버튼 */
 .header-icon {
   background: none;
   border: none;
@@ -60,13 +58,13 @@
 }
 
 /* =========================
-   관리자 영역 (아이콘 + 이름)
+   관리자 영역
 ========================= */
 .header-user {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 10px;
-  cursor: pointer;
 }
 
 .admin-icon {
@@ -79,11 +77,158 @@
 }
 
 /* =========================
-   콘텐츠 영역
+   🔽 화살표 토글 (개선됨)
+========================= */
+.arrow-toggle {
+  width: 32px;
+  height: 32px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  padding: 0;
+}
+
+/* chevron 모양 */
+.arrow-toggle::before {
+  content: "";
+  position: absolute;
+  top: 5px;
+  left: 8px;
+  width: 10px;
+  height: 10px;
+  border-right: 3px solid #555;
+  border-bottom: 3px solid #555;
+  transform: rotate(45deg);
+  transition: transform 0.25s ease;
+}
+
+/* 열렸을 때 위로 */
+.arrow-toggle.open::before {
+  transform: rotate(-135deg);
+}
+
+/* =========================
+   드롭다운 박스
+========================= */
+.admin-dropdown {
+  position: absolute;
+  top: 75px;
+  right: 0;
+
+  width: 220px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 16px;
+
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  z-index: 100;
+}
+
+.dropdown-name {
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.dropdown-divider {
+  height: 1px;
+  background-color: #e5e5e5;
+  margin-bottom: 12px;
+}
+
+.logout-btn {
+  width: 100%;
+  height: 36px;
+  background-color: #007aff;
+  color: #fff;
+  border: none;
+  border-radius: 18px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  background-color: #0567cf;
+}
+
+/* =========================
+   콘텐츠
 ========================= */
 .content {
-  flex: 1;                   /* 남은 영역 전부 차지 */
+  flex: 1;
   overflow-y: auto;
   background-color: #F3F2F4;
   padding: 0 20px;
+}
+
+
+/* =========================
+   모달 공통
+========================= */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-box {
+  width: 360px;
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 28px 24px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+  text-align: center;
+}
+
+.modal-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 24px;
+}
+
+/* =========================
+   모달 버튼 영역
+========================= */
+.modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+}
+
+.modal-actions.single {
+  gap: 0;
+}
+
+.modal-btn {
+  min-width: 100px;
+  height: 40px;
+  border-radius: 20px;
+  font-size: 14px;
+  cursor: pointer;
+  border: none;
+}
+
+/* 취소 */
+.modal-btn.cancel {
+  background-color: #e5e5e5;
+  color: #333;
+}
+
+/* 확인 */
+.modal-btn.confirm {
+  background-color: #007aff;
+  color: #fff;
+}
+
+.modal-btn.confirm:hover {
+  background-color: #0567cf;
 }
