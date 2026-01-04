@@ -1,46 +1,54 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import App from "../App.jsx";
 import MainLayout from "../components/layouts/MainLayout.jsx";
+
 import DashboardPage from "../pages/DashboardPage.jsx";
 import ServicePolicyPage from "../pages/ServicePolicyPage.jsx";
 import ReservationManagePage from "../pages/ReservationManagePage.jsx";
 import DriverManagePage from "../pages/DriverManagePage.jsx";
 import CustomerManagePage from "../pages/CustomerManagePage.jsx";
 import AdminAccountPage from "../pages/AdminAccountPage.jsx";
+import AdminLoginPage from "../pages/AdminLoginPage.jsx";
 
 const router = createBrowserRouter([
   {
-    element: <App />,  
+    element: <App />,
     children: [
+
+      /* 🔐 로그인 페이지 (레이아웃 없음) */
       {
-        element: <MainLayout />, // 여기서 Header + Outlet 구조
+        path: "/adminloginstart",
+        element: <AdminLoginPage />
+      },
+
+      /* 🧱 관리자 내부 페이지 (Header + Sidebar 포함) */
+      {
+        element: <MainLayout />,
         children: [
           {
-            path: "/",           
-            element: <DashboardPage /> 
+            path: "/",
+            element: <DashboardPage />
           },
           {
-            path: "/service",           
-            element: <ServicePolicyPage /> 
+            path: "/service",
+            element: <ServicePolicyPage />
           },
           {
-            path: "/reservation",            
+            path: "/reservation",
             element: <ReservationManagePage />
           },
           {
-            path: "/driver",           
+            path: "/driver",
             element: <DriverManagePage />
           },
           {
-            path: "/customer",            
-            element: <CustomerManagePage /> 
+            path: "/customer",
+            element: <CustomerManagePage />
           },
           {
-            path: "/admin",           
-            element: <AdminAccountPage /> 
-          },          
-          // 앞으로 다른 페이지가 추가되면 이 배열에 추가합니다.
-          // 예: { path: '/login', element: <LoginPage /> }
+            path: "/admin",
+            element: <AdminAccountPage />
+          }
         ]
       }
     ]
@@ -50,3 +58,4 @@ const router = createBrowserRouter([
 const Router = () => <RouterProvider router={router} />;
 
 export default Router;
+
