@@ -17,8 +17,8 @@ export default function CustomerManagePage() {
             <div>사용자번호</div>
             <div>고객명</div>
             <div>연락처</div>
-            <div>이메일</div>
-            <div>로그인제공자</div>
+            <div>등록 매장 보유수</div>
+            <div>예약 건수</div>
             <div>관리</div>
             <div>상태</div>
           </div>
@@ -28,8 +28,8 @@ export default function CustomerManagePage() {
             <div>1</div>
             <div>김길동</div>
             <div>010-3456-7821</div>
-            <div>jhkim@gmail.com</div>
-            <div>KAKAO</div>
+            <div>3곳</div>
+            <div>5건</div>
             <div>
               <button className="detail-btn">상세보기</button>
             </div>
@@ -43,8 +43,8 @@ export default function CustomerManagePage() {
             <div>2</div>
             <div>이길동</div>
             <div>010-9821-3345</div>
-            <div>kimjh2@gmail.com</div>
-            <div>KAKAO</div>
+            <div>2곳</div>
+            <div>10건</div>
             <div>
               <button className="detail-btn">상세보기</button>
             </div>
@@ -58,8 +58,8 @@ export default function CustomerManagePage() {
             <div>3</div>
             <div>박길동</div>
             <div>010-7741-9920</div>
-            <div>taeho@gmail.com</div>
-            <div>KAKAO</div>
+            <div>1곳</div>
+            <div>8건</div>
             <div>
               <button className="detail-btn">상세보기</button>
             </div>
@@ -73,8 +73,8 @@ export default function CustomerManagePage() {
             <div>4</div>
             <div>고길동</div>
             <div>010-6612-1209</div>
-            <div>leeho@gmail.com</div>
-            <div>KAKAO</div>
+            <div>1곳</div>
+            <div>5건</div>
             <div>
               <button className="detail-btn">상세보기</button>
             </div>
@@ -88,8 +88,8 @@ export default function CustomerManagePage() {
             <div>5</div>
             <div>신길동</div>
             <div>010-4309-1188</div>
-            <div>sunmin@gmail.com</div>
-            <div>KAKAO</div>
+            <div>2곳</div>
+            <div>1건</div>
             <div>
               <button className="detail-btn">상세보기</button>
             </div>
@@ -103,8 +103,8 @@ export default function CustomerManagePage() {
             <div>6</div>
             <div>홍길동</div>
             <div>010-9981-5523</div>
-            <div>jsm@gmail.com</div>
-            <div>KAKAO</div>
+            <div>1곳</div>
+            <div>3건</div>
             <div>
               <button className="detail-btn">상세보기</button>
             </div>

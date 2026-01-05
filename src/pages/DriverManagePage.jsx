@@ -17,10 +17,9 @@ export default function DriverManagePage() {
             <div>기사번호</div>
             <div>기사명</div>
             <div>기술등급</div>
-            <div>휴무여부</div>
-            <div>근무가능날짜</div>
-            <div>근무시작시간</div>
-            <div>근무종료시간</div>
+            <div>연락처</div>
+            <div>입사일</div>
+            <div>퇴사일</div>
             <div>상태</div>
           </div>
 
@@ -29,10 +28,9 @@ export default function DriverManagePage() {
             <div>1</div>
             <div>김정현</div>
             <div>Senior</div>
-            <div>false</div>
-            <div>2026-01-04</div>
-            <div>09:00</div>
-            <div>11:00</div>
+            <div>010-1234-0001</div>
+            <div>2025-01-04</div>
+            <div>-</div>
             <div>
               <span className="status-badge greencolor">활성</span>
             </div>
@@ -43,10 +41,9 @@ export default function DriverManagePage() {
             <div>2</div>
             <div>이태호</div>
             <div>Junior</div>
-            <div>false</div>
-            <div>2026-01-04</div>
-            <div>10:00</div>
-            <div>11:00</div>
+            <div>010-1234-0002</div>
+            <div>2025-01-04</div>
+            <div>-</div>
             <div>
               <span className="status-badge greencolor">활성</span>
             </div>
@@ -57,24 +54,22 @@ export default function DriverManagePage() {
             <div>3</div>
             <div>정선민</div>
             <div>Middle</div>
-            <div>false</div>
-            <div>2026-01-04</div>
-            <div>11:00</div>
-            <div>13:00</div>
+            <div>010-1234-0003</div>
+            <div>2025-01-04</div>
+            <div>-</div>
             <div>
               <span className="status-badge greencolor">활성</span>
             </div>
           </div>
 
-          {/* row 4 (휴무) */}
+          {/* row 4 (퇴사, 비활성) */}
           <div className="driver-table-row">
             <div>4</div>
             <div>김정현</div>
             <div>Senior</div>
-            <div>true</div>
-            <div>2026-01-04</div>
-            <div>—</div>
-            <div>—</div>
+            <div>010-1234-0004</div>
+            <div>2025-01-04</div>
+            <div>2025-01-05</div>
             <div>
               <span className="status-badge redcolor">비활성</span>
             </div>
@@ -85,10 +80,9 @@ export default function DriverManagePage() {
             <div>5</div>
             <div>이태호</div>
             <div>Junior</div>
-            <div>false</div>
-            <div>2026-01-04</div>
-            <div>13:00</div>
-            <div>14:00</div>
+            <div>010-1234-0005</div>
+            <div>2025-01-04</div>
+            <div>-</div>
             <div>
               <span className="status-badge greencolor">활성</span>
             </div>

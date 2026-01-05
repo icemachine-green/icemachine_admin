@@ -20,9 +20,8 @@ export default function ReservationManagePage() {
                 <th>고객명</th>
                 <th>업체명</th>
                 <th>기사명</th>
-                <th>예약시작일자</th>
-                <th>예약시작시간</th>
-                <th>예약종료시간</th>
+                <th>예약 날짜</th>
+                <th>최근 예약</th>
                 <th>예약진행상태</th>
               </tr>
             </thead>
@@ -34,8 +33,7 @@ export default function ReservationManagePage() {
                 <td>한옥커피</td>
                 <td>김정현</td>
                 <td>2025-12-31</td>
-                <td>09:15</td>
-                <td>10:15</td>
+                <td>09:00~10:00</td>
                 <td><span className="status-badge greencolor">작업중</span></td>
               </tr>
 
@@ -45,8 +43,7 @@ export default function ReservationManagePage() {
                 <td>커피명가</td>
                 <td>김정현</td>
                 <td>2025-12-31</td>
-                <td>10:15</td>
-                <td>12:15</td>
+                <td>09:00~10:00</td>
                 <td><span className="status-badge redcolor">취소</span></td>
               </tr>
 
@@ -56,8 +53,7 @@ export default function ReservationManagePage() {
                 <td>Cafe Spell</td>
                 <td>김정현</td>
                 <td>2025-12-31</td>
-                <td>10:15</td>
-                <td>12:30</td>
+                <td>09:00~10:00</td>
                 <td><span className="status-badge bluecolor">접수됨</span></td>
               </tr>
 
@@ -67,19 +63,17 @@ export default function ReservationManagePage() {
                 <td>아메리카노1000</td>
                 <td>김정현</td>
                 <td>2025-12-31</td>
-                <td>11:32</td>
-                <td>12:32</td>
+                <td>09:00~10:00</td>
                 <td><span className="status-badge purplecolor">확정됨</span></td>
               </tr>
 
               <tr>
                 <td>5</td>
                 <td>홍길동</td>
-                <td>패더밤</td>
+                <td>맥다방</td>
                 <td>김정현</td>
                 <td>2025-12-31</td>
-                <td>11:32</td>
-                <td>12:32</td>
+                <td>09:00~10:00</td>
                 <td><span className="status-badge orangecolor">완료됨</span></td>
               </tr>
             </tbody>

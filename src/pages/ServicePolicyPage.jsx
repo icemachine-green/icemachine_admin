@@ -21,6 +21,7 @@ export default function ServicePolicy() {
                 <th>서비스 타입</th>
                 <th>표준작업시간</th>
                 <th>서비스정책내용</th>
+                <th>가격</th>
                 <th>상태</th>
               </tr>
             </thead>
@@ -32,6 +33,7 @@ export default function ServicePolicy() {
                 <td>프리미엄 클린</td>
                 <td>180분</td>
                 <td>완전분해세척</td>
+                <td>90,000원</td>
                 <td><span className="status-badge greencolor">활성</span></td>
               </tr>
               <tr>
@@ -40,6 +42,7 @@ export default function ServicePolicy() {
                 <td>딥클린</td>
                 <td>120분</td>
                 <td>고급세척</td>
+                <td>90,000원</td>
                 <td><span className="status-badge greencolor">활성</span></td>
               </tr>
               <tr>
@@ -48,6 +51,7 @@ export default function ServicePolicy() {
                 <td>스탠다드 클린</td>
                 <td>60분</td>
                 <td>내부세척포함</td>
+                <td>90,000원</td>
                 <td><span className="status-badge redcolor">비활성</span></td>
               </tr>
             </tbody>

@@ -97,11 +97,12 @@
 .table-row {
   display: grid;
   grid-template-columns: 
+    0.8fr      /* 예약id */
     1fr        /* 고객명 */
     1.2fr      /* 매장명 */
-    1.4fr      /* 서비스 타입 */
+    1.0fr      /* 기사명 */
     1.2fr      /* 예약 시작 날짜 */
-    1fr        /* 기사명 */
+    1fr        /* 최근 예약 */
     0.8fr;     /* 상태 */
   align-items: center;
   padding: 14px 0;
