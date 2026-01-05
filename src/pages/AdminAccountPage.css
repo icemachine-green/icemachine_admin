@@ -51,12 +51,12 @@
 		/* 관리자 이름 */
 		1fr
 		/* 역할 */
-		1.2fr
-		/* 계정 활성화 여부 */
 		1.6fr
 		/* 마지막 로그인 시간 */
+		1.2fr
+  	/* 마지막 로그인 IP */	
 		1.2fr;
-	/* 마지막 로그인 IP */
+		/* 계정 활성화 여부 */
 	align-items: center;
 	padding: 14px 0;
 	border-bottom: 1px solid #E6E6E6;
@@ -95,8 +95,9 @@
 	background-color: #3AA76D;
 }
 
+/* 그래이 컬러를 붉은 색으로 바꿨음 */
 .graycolor {
-	background-color: #9E9E9E;
+	background-color: #E14B4B;
 }
 
 /* =========================

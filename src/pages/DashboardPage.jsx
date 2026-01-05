@@ -74,7 +74,7 @@ export default function DashboardPage() {
       {/* 최근 예약 */}
       <section className="dashboard-table-wrapper">
         <div className="table-header">
-          <h2>최근 예약</h2>
+          <h2>최근 예약 <span> (최근 5건씩 출력됩니다)</span></h2>
           <span>오늘 예약 : <strong>12</strong> 건</span>
         </div>
 
@@ -103,8 +103,17 @@ export default function DashboardPage() {
                 </span>
               </div>
             </div>
+            
           ))}
         </div>
+            <div className="pagination">
+            <button className="page-btn">&lt;&lt;</button>
+            <button className="page-btn active">1</button>
+            <button className="page-btn">2</button>
+            <button className="page-btn">3</button>
+            <button className="page-btn">4</button>
+            <button className="page-btn">&gt;&gt;</button>
+          </div>
       </section>
     </div>
   );

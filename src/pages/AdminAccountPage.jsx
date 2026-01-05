@@ -17,10 +17,10 @@ export default function AdminAccountPage() {
             <div>관리자번호</div>
             <div>관리자 아이디</div>
             <div>관리자 이름</div>
-            <div>역할</div>
-            <div>계정 활성화 여부</div>
+            <div>역할</div>           
             <div>마지막로그인시간</div>
-            <div>마지막로그인IP</div>
+            <div>마지막로그인IP</div> 
+            <div>계정 활성화 여부</div>
           </div>
 
           {/* rows */}
@@ -29,9 +29,9 @@ export default function AdminAccountPage() {
             <div>admin_master</div>
             <div>강동원</div>
             <div>admin</div>
-            <div><span className="status-badge greencolor">활성</span></div>
             <div>2025-12-30 09:10:37</div>
             <div>192.168.0.12</div>
+            <div><span className="status-badge greencolor">활성</span></div>
           </div>
 
           <div className="adminaccount-row">
@@ -39,9 +39,9 @@ export default function AdminAccountPage() {
             <div>admin01</div>
             <div>강동원</div>
             <div>admin</div>
-            <div><span className="status-badge greencolor">활성</span></div>
             <div>2025-12-30 09:10:37</div>
             <div>192.168.0.12</div>
+            <div><span className="status-badge greencolor">활성</span></div>
           </div>
 
           <div className="adminaccount-row">
@@ -49,9 +49,9 @@ export default function AdminAccountPage() {
             <div>system_admin</div>
             <div>강동원</div>
             <div>admin</div>
-            <div><span className="status-badge greencolor">활성</span></div>
             <div>2025-12-30 09:10:37</div>
             <div>192.168.0.12</div>
+            <div><span className="status-badge greencolor">활성</span></div>
           </div>
 
           <div className="adminaccount-row">
@@ -59,9 +59,9 @@ export default function AdminAccountPage() {
             <div>service_admin</div>
             <div>강동원</div>
             <div>admin</div>
-            <div><span className="status-badge graycolor">비활성</span></div>
             <div>2025-12-30 09:10:37</div>
             <div>192.168.0.12</div>
+            <div><span className="status-badge graycolor">비활성</span></div>
           </div>
 
           <div className="adminaccount-row">
@@ -69,9 +69,9 @@ export default function AdminAccountPage() {
             <div>manager_admin</div>
             <div>강동원</div>
             <div>super_admin</div>
-            <div><span className="status-badge greencolor">활성</span></div>
             <div>2025-12-30 09:10:37</div>
             <div>172.16.1.42</div>
+            <div><span className="status-badge greencolor">활성</span></div>
           </div>
 
           <div className="adminaccount-row">
@@ -79,9 +79,9 @@ export default function AdminAccountPage() {
             <div>super_admin</div>
             <div>정우성</div>
             <div>super_admin</div>
-            <div><span className="status-badge greencolor">활성</span></div>
             <div>2025-12-30 09:10:37</div>
             <div>172.16.1.42</div>
+            <div><span className="status-badge greencolor">활성</span></div>
           </div>
 
           <div className="adminaccount-row">
@@ -89,9 +89,9 @@ export default function AdminAccountPage() {
             <div>platform_admin</div>
             <div>정우성</div>
             <div>admin</div>
-            <div><span className="status-badge greencolor">활성</span></div>
             <div>2025-12-30 09:10:37</div>
             <div>172.16.1.42</div>
+            <div><span className="status-badge greencolor">활성</span></div>
           </div>
 
           <div className="adminaccount-row">
@@ -99,9 +99,9 @@ export default function AdminAccountPage() {
             <div>platform_admin</div>
             <div>정우성</div>
             <div>admin</div>
-            <div><span className="status-badge greencolor">활성</span></div>
             <div>2025-12-30 09:10:37</div>
             <div>10.0.0.21</div>
+            <div><span className="status-badge greencolor">활성</span></div>
           </div>
 
           {/* 페이지네이션 */}
