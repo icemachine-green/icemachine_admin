@@ -3,7 +3,9 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   fetchDashboardStats,
   fetchRecentReservations,
+  fetchReservationDetail, // 상세 조회를 위한 Thunk 추가
 } from "../store/thunks/adminReservationThunk";
+import ReservationDetailModal from "./ReservationDetailModal"; // 모달 컴포넌트 추가
 import "./DashboardPage.css";
 
 const STATUS_MAP = {
@@ -45,6 +47,11 @@ export default function DashboardPage() {
   const handlePageChange = (pageNumber) => {
     if (pageNumber < 1 || pageNumber > totalPages) return;
     setCurrentPage(pageNumber);
+  };
+
+  // 상세보기 클릭 핸들러
+  const handleOpenDetail = (id) => {
+    dispatch(fetchReservationDetail(id));
   };
 
   return (
@@ -100,7 +107,13 @@ export default function DashboardPage() {
                 </div>
                 <div>{row.reservedDate}</div>
                 <div>
-                  <button className="detail-btn">상세보기</button>
+                  {/* 상세보기 버튼에 핸들러 연결 */}
+                  <button
+                    className="detail-btn"
+                    onClick={() => handleOpenDetail(row.id)}
+                  >
+                    상세보기
+                  </button>
                 </div>
                 <div>
                   <span
@@ -160,6 +173,9 @@ export default function DashboardPage() {
           </button>
         </div>
       </section>
+
+      {/* 예약 상세 모달 추가 */}
+      <ReservationDetailModal />
     </div>
   );
 }
