@@ -1,30 +1,23 @@
-import './App.css';
-import SideBar from "./components/sidebar/SideBar.jsx";
-import { Outlet, useLocation } from "react-router-dom";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { Outlet } from "react-router-dom"; // 이 부분이 빠졌거나 에러가 났을 겁니다.
+import { reissueThunk } from "./store/thunks/authThunk"; // 경로 확인 필요
+import "./App.css";
 
 function App() {
-  // 현재 라우터의 경로(path)를 가져오기 위한 훅
-  const { pathname } = useLocation();
+  const dispatch = useDispatch();
 
-  // 관리자 로그인 페이지 여부 체크
-  // 해당 페이지에서는 Sidebar를 숨기기 위함
-  const isLoginPage = pathname === "/adminloginstart";
+  useEffect(() => {
+    // 앱이 처음 로드될 때 쿠키를 확인하여 로그인을 유지합니다.
+    dispatch(reissueThunk());
+  }, [dispatch]);
 
   return (
     <div className="App">
-      {/* 
-        로그인 페이지가 아닐 때만 사이드바 출력
-        (관리자 내부 페이지 전용 레이아웃)
+      {/* Router.jsx에서 설정한 구조에 따라 
+          ProtectedRoute 또는 MainLayout 등이 이 자리에 렌더링됩니다.
       */}
-      {!isLoginPage && <SideBar />}
-
-      {/* 
-        각 라우트별 페이지가 렌더링되는 영역
-        MainLayout 또는 단독 페이지가 이 위치에 출력됨
-      */}
-      <main>
-        <Outlet />
-      </main>
+      <Outlet />
     </div>
   );
 }

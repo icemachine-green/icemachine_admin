@@ -66,6 +66,4 @@
 body {
   font-family: 'Pretendard', sans-serif;
   font-weight: 600;
-	max-width: 1440px;
-	margin: 0 auto; /*콘텐츠 영역이 중앙에 오도록*/
 }

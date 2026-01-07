@@ -1,81 +1,81 @@
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchDashboardStats,
+  fetchRecentReservations,
+} from "../store/thunks/adminReservationThunk";
 import "./DashboardPage.css";
 
-export default function DashboardPage() {
-  const stats = [
-    { label: "접수됨", count: 5, color: "blue" },
-    { label: "확정됨", count: 1, color: "purple" },
-    { label: "작업중", count: 2, color: "green" },
-    { label: "작업 완료", count: 4, color: "orange" },
-    { label: "취소", count: 1, color: "red" },
-  ];
+const STATUS_MAP = {
+  PENDING: { label: "접수됨", color: "blue" },
+  CONFIRMED: { label: "확정됨", color: "purple" },
+  START: { label: "작업중", color: "green" },
+  COMPLETED: { label: "완료됨", color: "orange" },
+  CANCELED: { label: "취소", color: "red" },
+};
 
-  const reservations = [
-    {
-      id : "1",
-      customer: "홍길동",
-      store: "한옥카페",
-      engineer: "김정현",
-      date: "2026-01-31",
-      time: "09:00~11:00",
-      status: "취소",
-    },
-    {
-      id : "2",
-      customer: "홍길동",
-      store: "커피명가",
-      engineer: "이태호",
-      date: "2026-01-31",
-      time: "09:00~11:00",
-      status: "확정됨",
-    },
-    {
-      id : "3",
-      customer: "홍길동",
-      store: "Cafe Spell",
-      engineer: "이태호",
-      date: "2026-01-31",
-      time: "09:00~11:00",
-      status: "접수됨",
-    },
-    {
-      id : "4",
-      customer: "홍길동",
-      store: "아메리카노 1000",
-      engineer: "이태호",
-      date: "2026-02-05",
-      time: "09:00~11:00",
-      status: "완료됨",      
-    },
-    {
-      id : "5",
-      customer: "고길동",
-      store: "맥다방",
-      engineer: "정선민",
-      date: "2026-02-07",
-      time: "09:00~11:00",
-      status: "작업중",
-    },
-  ];
+export default function DashboardPage() {
+  const dispatch = useDispatch();
+  const [currentPage, setCurrentPage] = useState(1);
+  const limit = 5;
+  const pageGroupSize = 5;
+
+  const { stats, recentReservations, loading, totalCount } = useSelector(
+    (state) => state.adminReservation
+  );
+
+  useEffect(() => {
+    dispatch(fetchDashboardStats());
+    // [중요] 정렬 기준을 reservedDate로 명시적 고정
+    dispatch(
+      fetchRecentReservations({
+        page: currentPage,
+        limit: limit,
+        orderBy: "reservedDate",
+        sortBy: "DESC",
+      })
+    );
+  }, [dispatch, currentPage]);
+
+  const totalPages = Math.ceil((totalCount || 0) / limit) || 1;
+  const currentGroup = Math.ceil(currentPage / pageGroupSize);
+  const startPage = (currentGroup - 1) * pageGroupSize + 1;
+  const endPage = Math.min(startPage + pageGroupSize - 1, totalPages);
+
+  const handlePageChange = (pageNumber) => {
+    if (pageNumber < 1 || pageNumber > totalPages) return;
+    setCurrentPage(pageNumber);
+  };
 
   return (
     <div className="dashboard-container">
-      <h1 className="dashboard-greeting">안녕하세요, 관리자님! 대시보드입니다.</h1>
+      <h1 className="dashboard-greeting">
+        안녕하세요, 관리자님! 대시보드입니다.
+      </h1>
 
-      {/* 통계 카드 */}
       <section className="dashboard-stats">
-        {stats.map((item, idx) => (
-          <div key={idx} className="stat-card">
-            <strong>{item.count}</strong>
-            <span className={item.color}>{item.label}</span>
+        {Object.keys(STATUS_MAP).map((key) => (
+          <div key={key} className="stat-card">
+            <strong>{(stats[key] || 0).toLocaleString()}</strong>
+            <span className={STATUS_MAP[key].color}>
+              {STATUS_MAP[key].label}
+            </span>
           </div>
         ))}
       </section>
 
-      {/* 최근 예약 */}
       <section className="dashboard-table-wrapper">
         <div className="table-header">
-          <h2>최근 예약 <span> (최근 5건씩 출력됩니다)</span></h2>
-          <span>오늘 예약 : <strong>12</strong> 건</span>
+          <h2>
+            최근 예약{" "}
+            <span>
+              {" "}
+              (페이지: {currentPage} / {totalPages})
+            </span>
+          </h2>
+          <span>
+            오늘 예약 : <strong>{stats.TOTAL || 0}</strong> 건
+          </span>
         </div>
 
         <div className="dashboard-table">
@@ -85,35 +85,80 @@ export default function DashboardPage() {
             <div>업체명</div>
             <div>기사명</div>
             <div>예약 날짜</div>
-            <div>최근 예약</div>
+            <div>관리</div>
             <div>상태</div>
           </div>
 
-          {reservations.map((row, idx) => (
-            <div key={idx} className="table-row">
-              <div>{row.id}</div>
-              <div>{row.customer}</div>
-              <div>{row.store}</div>
-              <div>{row.engineer}</div>
-              <div>{row.date}</div>
-              <div>{row.time}</div>
-              <div>
-                <span className={`status-badge ${row.status}`}>
-                  {row.status}
-                </span>
+          {recentReservations?.length > 0 ? (
+            recentReservations.map((row) => (
+              <div key={row.id} className="table-row">
+                <div>{row.id}</div>
+                <div>{row.user?.name || "-"}</div>
+                <div>{row.business?.name || "-"}</div>
+                <div className={!row.engineer ? "unassigned" : ""}>
+                  {row.engineer?.name || "미배정"}
+                </div>
+                <div>{row.reservedDate}</div>
+                <div>
+                  <button className="detail-btn">상세보기</button>
+                </div>
+                <div>
+                  <span
+                    className={`status-badge ${
+                      STATUS_MAP[row.status]?.label || ""
+                    }`}
+                  >
+                    {STATUS_MAP[row.status]?.label || row.status}
+                  </span>
+                </div>
               </div>
+            ))
+          ) : (
+            <div
+              className="table-row no-data"
+              style={{ justifyContent: "center", padding: "40px" }}
+            >
+              {loading ? "데이터 로딩 중..." : "해당 내역이 없습니다."}
             </div>
-            
-          ))}
+          )}
         </div>
-            <div className="pagination">
-            <button className="page-btn">&lt;&lt;</button>
-            <button className="page-btn active">1</button>
-            <button className="page-btn">2</button>
-            <button className="page-btn">3</button>
-            <button className="page-btn">4</button>
-            <button className="page-btn">&gt;&gt;</button>
-          </div>
+
+        <div className="pagination">
+          {currentPage >= 6 && (
+            <button className="page-btn" onClick={() => handlePageChange(1)}>
+              &lt;&lt;
+            </button>
+          )}
+
+          <button
+            className="page-btn"
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+          >
+            &lt;
+          </button>
+
+          {Array.from(
+            { length: endPage - startPage + 1 },
+            (_, i) => startPage + i
+          ).map((num) => (
+            <button
+              key={num}
+              className={`page-btn ${currentPage === num ? "active" : ""}`}
+              onClick={() => handlePageChange(num)}
+            >
+              {num}
+            </button>
+          ))}
+
+          <button
+            className="page-btn"
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+          >
+            &gt;
+          </button>
+        </div>
       </section>
     </div>
   );

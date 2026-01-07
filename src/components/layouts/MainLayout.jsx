@@ -1,12 +1,16 @@
 import { Outlet, useLocation } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { logout } from "../../store/slices/authSlice";
+import SideBar from "../sidebar/SideBar";
 import "./MainLayout.css";
 
 export default function MainLayout() {
   const location = useLocation();
+  const dispatch = useDispatch();
+  const { admin } = useSelector((state) => state.auth);
   const [isOpen, setIsOpen] = useState(false);
 
-  /* 🔹 모달 상태 추가 */
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showCompleteModal, setShowCompleteModal] = useState(false);
 
@@ -33,7 +37,6 @@ export default function MainLayout() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  /* 🔹 로그아웃 흐름 */
   const handleLogoutClick = () => {
     setShowConfirmModal(true);
   };
@@ -41,69 +44,73 @@ export default function MainLayout() {
   const handleConfirmYes = () => {
     setShowConfirmModal(false);
     setShowCompleteModal(true);
-
-    // 👉 실제 로그아웃 로직은 여기서 추가 가능
-    // localStorage.clear();
-    // navigate("/admin/login");
+    dispatch(logout());
   };
 
-  const handleConfirmNo = () => {
-    setShowConfirmModal(false);
-  };
-
-  const handleCompleteClose = () => {
-    setShowCompleteModal(false);
-  };
+  const handleConfirmNo = () => setShowConfirmModal(false);
+  const handleCompleteClose = () => setShowCompleteModal(false);
 
   return (
-    <main className="main-layout">
-      <header className="header">
-        <div className="header-left">
-          <h1>{title}</h1>
-        </div>
+    <div className="main-layout-container">
+      {/* 1. 왼쪽 사이드바 고정 */}
+      <SideBar />
 
-        <div className="header-right">
-          <img className="header-icon" src="/icons/jong_icon.png" alt="종아이콘" />
-          <img className="header-icon" src="/icons/memo_icon.png" alt="메모아이콘" />
-
-          <div className="header-user" ref={dropdownRef}>
-            <img
-              className="admin-icon"
-              src="/icons/admin_icon.png"
-              alt="관리자로그인아이콘"
-            />
-            <span className="admin-name">admin 계정 관리자</span>
-
-            <button
-              className={`arrow-toggle ${isOpen ? "open" : ""}`}
-              onClick={() => setIsOpen((prev) => !prev)}
-            />
-
-            {isOpen && (
-              <div className="admin-dropdown">
-                <p className="dropdown-name">admin 계정 관리자</p>
-                <div className="dropdown-divider" />
-                <button className="logout-btn" onClick={handleLogoutClick}>
-                  로그아웃 하기
-                </button>
-              </div>
-            )}
+      {/* 2. 오른쪽 전체 영역 (헤더 + 콘텐츠) */}
+      <div className="main-layout-inner">
+        <header className="header">
+          <div className="header-left">
+            <h1>{title}</h1>
           </div>
-        </div>
-      </header>
 
-      <section className="content">
-        <Outlet />
-      </section>
+          <div className="header-right">
+            <img
+              className="header-icon"
+              src="/icons/jong_icon.png"
+              alt="알림"
+            />
+            <img
+              className="header-icon"
+              src="/icons/memo_icon.png"
+              alt="메모"
+            />
 
-      {/* =========================
-          로그아웃 확인 모달
-      ========================= */}
+            <div className="header-user" ref={dropdownRef}>
+              <img
+                className="admin-icon"
+                src="/icons/admin_icon.png"
+                alt="관리자"
+              />
+              <span className="admin-name">{admin?.name || "관리자"}님</span>
+
+              <button
+                className={`arrow-toggle ${isOpen ? "open" : ""}`}
+                onClick={() => setIsOpen((prev) => !prev)}
+              />
+
+              {isOpen && (
+                <div className="admin-dropdown">
+                  <p className="dropdown-name">{admin?.username || "admin"}</p>
+                  <div className="dropdown-divider" />
+                  <button className="logout-btn" onClick={handleLogoutClick}>
+                    로그아웃 하기
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        </header>
+
+        {/* 실제 대시보드 등의 내용이 나오는 영역 */}
+        <section className="content">
+          <Outlet />
+        </section>
+      </div>
+
+      {/* 모달 레이어 */}
       {showConfirmModal && (
         <div className="modal-overlay">
           <div className="modal-box">
             <p className="modal-title">로그아웃 하시겠습니까?</p>
-
             <div className="modal-actions">
               <button className="modal-btn cancel" onClick={handleConfirmNo}>
                 아니오
@@ -116,22 +123,21 @@ export default function MainLayout() {
         </div>
       )}
 
-      {/* =========================
-          로그아웃 완료 모달
-      ========================= */}
       {showCompleteModal && (
         <div className="modal-overlay">
           <div className="modal-box">
             <p className="modal-title">로그아웃 되었습니다.</p>
-
             <div className="modal-actions single">
-              <button className="modal-btn confirm" onClick={handleCompleteClose}>
+              <button
+                className="modal-btn confirm"
+                onClick={handleCompleteClose}
+              >
                 확인
               </button>
             </div>
           </div>
         </div>
       )}
-    </main>
+    </div>
   );
 }

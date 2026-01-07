@@ -1,6 +1,11 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  RouterProvider,
+  Navigate,
+} from "react-router-dom";
 import App from "../App.jsx";
 import MainLayout from "../components/layouts/MainLayout.jsx";
+import ProtectedRoute from "../components/auth/ProtectedRoute.jsx"; // 가드 컴포넌트 추가 필요
 
 import DashboardPage from "../pages/DashboardPage.jsx";
 import ServicePolicyPage from "../pages/ServicePolicyPage.jsx";
@@ -12,50 +17,60 @@ import AdminLoginPage from "../pages/AdminLoginPage.jsx";
 
 const router = createBrowserRouter([
   {
+    path: "/",
     element: <App />,
     children: [
-
-      /* 🔐 로그인 페이지 (레이아웃 없음) */
+      /* 🔓 공개 라우트 (누구나 접근 가능) */
       {
-        path: "/adminloginstart",
-        element: <AdminLoginPage />
+        path: "ice-mgnt-505",
+        element: <AdminLoginPage />,
       },
 
-      /* 🧱 관리자 내부 페이지 (Header + Sidebar 포함) */
+      /* 🔐 보호된 라우트 (로그인 필수) */
       {
-        element: <MainLayout />,
+        element: <ProtectedRoute />,
         children: [
           {
-            path: "/",
-            element: <DashboardPage />
+            element: <MainLayout />,
+            children: [
+              {
+                index: true,
+                element: <DashboardPage />,
+              },
+              {
+                path: "service",
+                element: <ServicePolicyPage />,
+              },
+              {
+                path: "reservation",
+                element: <ReservationManagePage />,
+              },
+              {
+                path: "driver",
+                element: <DriverManagePage />,
+              },
+              {
+                path: "customer",
+                element: <CustomerManagePage />,
+              },
+              {
+                path: "admin",
+                element: <AdminAccountPage />,
+              },
+            ],
           },
-          {
-            path: "/service",
-            element: <ServicePolicyPage />
-          },
-          {
-            path: "/reservation",
-            element: <ReservationManagePage />
-          },
-          {
-            path: "/driver",
-            element: <DriverManagePage />
-          },
-          {
-            path: "/customer",
-            element: <CustomerManagePage />
-          },
-          {
-            path: "/admin",
-            element: <AdminAccountPage />
-          }
-        ]
-      }
-    ]
-  }
+        ],
+      },
+
+      /* ❓ 정의되지 않은 경로는 로그인으로 리다이렉트 */
+      {
+        path: "*",
+        element: <Navigate to="/ice-mgnt-505" replace />,
+      },
+    ],
+  },
 ]);
 
 const Router = () => <RouterProvider router={router} />;
 
 export default Router;
-

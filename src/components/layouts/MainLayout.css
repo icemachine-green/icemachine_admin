@@ -1,48 +1,35 @@
-/* =========================
-   메인 레이아웃
-========================= */
-.main-layout {
+/* MainLayout.css */
+.main-layout-container {
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+  background-color: #f3f2f4;
+}
+
+.main-layout-inner {
   flex: 1;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  min-width: 0; /* 내부 요소 넘침 방지 */
 }
 
-/* =========================
-   헤더
-========================= */
 .header {
   height: 100px;
   background-color: #ffffff;
-  color: #000;
-
   display: flex;
   align-items: center;
   justify-content: space-between;
-
   padding: 0 55px;
-  box-sizing: border-box;
   border-bottom: 1px solid #e5e5e5;
-
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
 .header h1 {
-  font-size: 40px;
+  font-size: 32px; /* 가독성을 위해 살짝 조절 */
   margin: 0;
+  font-weight: 700;
 }
 
-/* =========================
-   헤더 - 왼쪽
-========================= */
-.header-left {
-  display: flex;
-  align-items: center;
-}
-
-/* =========================
-   헤더 - 오른쪽
-========================= */
 .header-right {
   display: flex;
   align-items: center;
@@ -50,16 +37,10 @@
 }
 
 .header-icon {
-  background: none;
-  border: none;
+  width: 32px;
   cursor: pointer;
-  width: 40px;
-  padding: 4px;
 }
 
-/* =========================
-   관리자 영역
-========================= */
 .header-user {
   position: relative;
   display: flex;
@@ -68,12 +49,50 @@
 }
 
 .admin-icon {
-  width: 50px;
+  width: 40px;
 }
 
-.admin-name {
-  font-size: 16px;
-  font-weight: 500;
+.content {
+  flex: 1;
+  padding: 32px;
+  overflow-y: auto;
+}
+
+/* 드롭다운 & 모달 스타일은 기존 주신 것과 동일하게 유지하시면 됩니다 */
+.admin-dropdown {
+  position: absolute;
+  top: 60px;
+  right: 0;
+  width: 200px;
+  background: white;
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 100;
+}
+
+.logout-btn {
+  width: 100%;
+  padding: 8px;
+  background-color: #007aff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* 모달 애니메이션 및 오버레이 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
 }
 
 /* =========================
@@ -106,129 +125,4 @@
 /* 열렸을 때 위로 */
 .arrow-toggle.open::before {
   transform: rotate(-135deg);
-}
-
-/* =========================
-   드롭다운 박스
-========================= */
-.admin-dropdown {
-  position: absolute;
-  top: 75px;
-  right: 0;
-
-  width: 220px;
-  background-color: #ffffff;
-  border-radius: 12px;
-  padding: 16px;
-
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-  z-index: 100;
-}
-
-.dropdown-name {
-  font-size: 14px;
-  font-weight: 600;
-  text-align: center;
-  margin-bottom: 10px;
-}
-
-.dropdown-divider {
-  height: 1px;
-  background-color: #e5e5e5;
-  margin-bottom: 12px;
-}
-
-.logout-btn {
-  width: 100%;
-  height: 36px;
-  background-color: #007aff;
-  color: #fff;
-  border: none;
-  border-radius: 18px;
-  font-size: 14px;
-  cursor: pointer;
-}
-
-.logout-btn:hover {
-  background-color: #0567cf;
-}
-
-/* =========================
-   콘텐츠
-========================= */
-.content {
-  flex: 1;
-  overflow-y: auto;
-  background-color: #F3F2F4;
-  padding: 0 20px;
-}
-
-
-/* =========================
-   모달 공통
-========================= */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.35);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-.modal-box {
-  width: 360px;
-  background-color: #ffffff;
-  border-radius: 16px;
-  padding: 28px 24px;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
-  text-align: center;
-}
-
-.modal-title {
-  font-size: 18px;
-  font-weight: 600;
-  margin-bottom: 24px;
-}
-
-/* =========================
-   모달 버튼 영역
-========================= */
-.modal-actions {
-  display: flex;
-  justify-content: center;
-  gap: 14px;
-}
-
-.modal-actions.single {
-  gap: 0;
-}
-
-.modal-btn {
-  min-width: 100px;
-  height: 40px;
-  border-radius: 20px;
-  font-size: 14px;
-  cursor: pointer;
-  border: none;
-}
-
-/* 취소 */
-.modal-btn.cancel {
-  background-color: #e5e5e5;
-  color: #333;
-}
-
-/* 확인 */
-.modal-btn.confirm {
-  background-color: #007aff;
-  color: #fff;
-}
-
-.modal-btn.confirm:hover {
-  background-color: #0567cf;
 }

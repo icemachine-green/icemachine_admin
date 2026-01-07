@@ -1,28 +1,48 @@
 /* App.css */
-body, html, #root {
+body,
+html,
+#root {
   margin: 0;
   padding: 0;
   height: 100%;
   width: 100%;
 }
 
+/* 최상위 컨테이너 */
 .App {
-  display: flex;          /* 좌우 배치 가능 */
-  min-height: 100vh;      /* 화면 높이만큼 */
-  min-width: 100vw;
+  display: flex; /* 좌(사이드바) 우(메인) 가로 배치 */
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden; /* 가로 스크롤 방지 */
 }
 
-/* 사이드바 스타일 */
+/* 사이드바 스타일 (SideBar.css와 App.css의 연결고리) */
 .sidebar-container {
-  width: 300px;           /* 원하는 사이드바 너비 */
-  background-color: #324053;
-  padding: 20px;
+  width: 240px; /* SideBar.css와 동일하게 설정 */
+  min-width: 240px; /* 중요: 절대 줄어들지 않도록 고정 */
+  height: 100vh;
+  background-color: #2f3b4e;
+  color: white;
+  box-sizing: border-box;
+  position: sticky; /* 스크롤 시에도 사이드바는 고정 */
+  top: 0;
+  left: 0;
+}
+
+/* 오른쪽 메인 콘텐츠 영역 */
+main {
+  flex: 1; /* 남은 모든 공간 차지 */
+  display: flex;
+  flex-direction: column; /* 헤더와 콘텐츠를 위아래로 */
+  background-color: #f3f2f4;
+  min-width: 0; /* 중요: 자식 요소(테이블 등)가 넓어져도 레이아웃 유지 */
   box-sizing: border-box;
 }
 
-/* main 영역 스타일 */
-main {
-  flex: 1;                /* 남은 공간 모두 차지 */
-  background-color: #ecd8ff;
-  box-sizing: border-box;
+/* MainLayout 내부 래퍼 */
+.main-layout-inner {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  flex: 1;
 }
