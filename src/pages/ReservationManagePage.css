@@ -85,10 +85,9 @@
   margin-left: 8px;
 }
 
-/* 핵심: 대시보드와 동일한 비율 기반 그리드 레이아웃 */
+/* 테이블 그리드 레이아웃 */
 .manage-table-row {
   display: grid;
-  /* 8개 항목에 최적화된 비율 배분 */
   /* ID(0.5) 고객(1.2) 매장(1.5) 모델(1.8) 기사(1.2) 서비스(0.8) 날짜(1.5) 상태(0.8) */
   grid-template-columns: 0.5fr 1.2fr 1.5fr 1.8fr 1.2fr 0.8fr 1.5fr 0.8fr;
   width: 100%;
@@ -120,7 +119,7 @@
 .col-machine,
 .col-engineer {
   text-align: left;
-  padding-left: 15px; /* 왼쪽 여백으로 가독성 확보 */
+  padding-left: 15px;
 }
 
 /* 2단 텍스트 구조 */
@@ -163,7 +162,7 @@
   font-size: 12px;
   font-weight: 600;
   color: #fff;
-  width: 75px; /* 배지 너비 고정하여 균형 유지 */
+  width: 75px;
   text-align: center;
 }
 
@@ -188,7 +187,59 @@
   text-align: center;
   color: #999;
 }
+
 .is-loading {
   opacity: 0.6;
   pointer-events: none;
+}
+
+/* --- 추가된 페이지네이션 섹션 --- */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 32px;
+  padding-bottom: 10px;
+}
+
+.page-btn {
+  min-width: 36px;
+  height: 36px;
+  padding: 0 8px;
+  border: 1px solid #ddd;
+  background-color: #fff;
+  border-radius: 6px;
+  color: #555;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.page-btn:hover:not(:disabled) {
+  background-color: #f0f0f5;
+  border-color: #bbb;
+  color: #333;
+}
+
+.page-btn.active {
+  background-color: #4f6bed;
+  border-color: #4f6bed;
+  color: #fff;
+  font-weight: 700;
+}
+
+.page-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.page-btn.arrow,
+.page-btn.double-arrow {
+  font-weight: 700;
+  background-color: #f9f9fb;
 }

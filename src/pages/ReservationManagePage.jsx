@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
@@ -33,11 +33,16 @@ export default function ReservationManagePage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
+  // 상태 관리
   const [currentPage, setCurrentPage] = useState(1);
   const [now, setNow] = useState(dayjs());
   const [lastUpdated, setLastUpdated] = useState(dayjs());
 
+  // 상수
   const limit = 8;
+  const pageGroupSize = 5;
+
+  // 검색 파라미터
   const reservationId = searchParams.get("reservationId") || "";
   const selectedDate = searchParams.get("date") || "";
 
@@ -47,25 +52,31 @@ export default function ReservationManagePage() {
     loading,
   } = useSelector((state) => state.adminReservation);
 
+  // 데이터 로드 함수
+  const loadData = useCallback(() => {
+    const todayStr = dayjs().format("YYYY-MM-DD");
+
+    dispatch(
+      fetchRecentReservations({
+        page: currentPage,
+        limit,
+        reservationId,
+        reservedDate: selectedDate,
+        startDate: !selectedDate && !reservationId ? todayStr : null,
+        orderBy: "reservedDate",
+        sortBy: "ASC",
+      })
+    );
+    setLastUpdated(dayjs());
+  }, [dispatch, currentPage, reservationId, selectedDate]);
+
+  // 검색 조건 변경 시 1페이지로 이동
   useEffect(() => {
-    const loadData = () => {
-      const todayStr = dayjs().format("YYYY-MM-DD");
+    setCurrentPage(1);
+  }, [reservationId, selectedDate]);
 
-      dispatch(
-        fetchRecentReservations({
-          page: currentPage,
-          limit,
-          reservationId,
-          reservedDate: selectedDate, // 특정 날짜 선택 시 해당 날짜만
-          // 날짜 선택이나 ID 검색이 없을 때만 오늘 이후 데이터로 제한
-          startDate: !selectedDate && !reservationId ? todayStr : null,
-          orderBy: "reservedDate",
-          sortBy: "ASC",
-        })
-      );
-      setLastUpdated(dayjs());
-    };
-
+  // 주기적 갱신 (Polling & Clock)
+  useEffect(() => {
     loadData();
     const pollingTimer = setInterval(loadData, 60000);
     const clockTimer = setInterval(() => setNow(dayjs()), 1000);
@@ -73,7 +84,19 @@ export default function ReservationManagePage() {
       clearInterval(pollingTimer);
       clearInterval(clockTimer);
     };
-  }, [dispatch, currentPage, reservationId, selectedDate]);
+  }, [loadData]);
+
+  // 페이지네이션 계산
+  const totalPages = Math.ceil((totalCount || 0) / limit) || 1;
+  const currentGroup = Math.ceil(currentPage / pageGroupSize);
+  const startPage = (currentGroup - 1) * pageGroupSize + 1;
+  const endPage = Math.min(startPage + pageGroupSize - 1, totalPages);
+
+  const handlePageChange = (pageNum) => {
+    if (pageNum < 1 || pageNum > totalPages) return;
+    setCurrentPage(pageNum);
+    window.scrollTo(0, 0); // 상단 이동
+  };
 
   return (
     <div className="reservation-manage-container">
@@ -88,7 +111,6 @@ export default function ReservationManagePage() {
             <span className="live-dot"></span>
             마지막 갱신: {lastUpdated.format("HH:mm:ss")} |
             <span className="current-time">
-              {" "}
               현재 시각: {now.format("HH:mm:ss")}
             </span>
           </div>
@@ -188,6 +210,52 @@ export default function ReservationManagePage() {
               </div>
             )}
           </div>
+        </div>
+
+        {/* 페이지네이션 추가 */}
+        <div className="pagination">
+          {currentPage > pageGroupSize && (
+            <button
+              className="page-btn double-arrow"
+              onClick={() => handlePageChange(1)}
+            >
+              &lt;&lt;
+            </button>
+          )}
+          <button
+            className="page-btn arrow"
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+          >
+            &lt;
+          </button>
+          {Array.from(
+            { length: endPage - startPage + 1 },
+            (_, i) => startPage + i
+          ).map((num) => (
+            <button
+              key={num}
+              className={`page-btn ${currentPage === num ? "active" : ""}`}
+              onClick={() => handlePageChange(num)}
+            >
+              {num}
+            </button>
+          ))}
+          <button
+            className="page-btn arrow"
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+          >
+            &gt;
+          </button>
+          {endPage < totalPages && (
+            <button
+              className="page-btn double-arrow"
+              onClick={() => handlePageChange(totalPages)}
+            >
+              &gt;&gt;
+            </button>
+          )}
         </div>
       </section>
     </div>
