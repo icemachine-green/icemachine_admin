@@ -19,15 +19,27 @@ export default function ReservationDetailModal() {
     (state) => state.adminReservation
   );
 
+  // 데이터가 없으면 렌더링하지 않음
   if (!data && !loading) return null;
 
-  const handleClose = () => {
+  // 닫기 로직: 이벤트 전파를 명확히 끊어줌
+  const handleClose = (e) => {
+    if (e && e.stopPropagation) e.stopPropagation();
     dispatch(clearSelectedReservation());
   };
 
-  const handleGoToManage = () => {
-    handleClose();
-    navigate("/reservations");
+  const handleGoToManage = (e) => {
+    if (e) e.preventDefault();
+
+    const targetId = data?.id;
+    dispatch(clearSelectedReservation());
+
+    if (targetId) {
+      // 백엔드 컨트롤러에서 받는 키값인 reservationId로 전달
+      navigate(`/reservation?reservationId=${targetId}`);
+    } else {
+      navigate(`/reservation`);
+    }
   };
 
   return (
@@ -37,7 +49,7 @@ export default function ReservationDetailModal() {
     >
       <div
         className="ReservationDetailModal-content"
-        onClick={(e) => e.stopPropagation()}
+        onClick={(e) => e.stopPropagation()} // 내부 클릭 시 닫힘 방지
       >
         <header className="ReservationDetailModal-header">
           <div className="ReservationDetailModal-header-left">
@@ -47,13 +59,17 @@ export default function ReservationDetailModal() {
             </span>
             {data && (
               <span
-                className={`status-badge ${STATUS_MAP[data.status]?.label}`}
+                // [버그 수정 포인트] .label 대신 .color를 클래스로 사용
+                className={`status-badge ${
+                  STATUS_MAP[data.status]?.color || ""
+                }`}
               >
                 {STATUS_MAP[data.status]?.label || data.status}
               </span>
             )}
           </div>
           <button
+            type="button"
             className="ReservationDetailModal-close-x"
             onClick={handleClose}
           >
@@ -161,12 +177,14 @@ export default function ReservationDetailModal() {
 
         <footer className="ReservationDetailModal-footer">
           <button
+            type="button"
             className="ReservationDetailModal-footer-btn manage"
             onClick={handleGoToManage}
           >
             이 예약 관리 페이지로 이동
           </button>
           <button
+            type="button"
             className="ReservationDetailModal-footer-btn close"
             onClick={handleClose}
           >

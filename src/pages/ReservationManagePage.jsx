@@ -1,95 +1,168 @@
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useSearchParams, useNavigate } from "react-router-dom";
+import { fetchRecentReservations } from "../store/thunks/adminReservationThunk.js";
 import "./ReservationManagePage.css";
 
+const STATUS_MAP = {
+  PENDING: { label: "접수됨", className: "접수됨" },
+  CONFIRMED: { label: "확정됨", className: "확정됨" },
+  START: { label: "작업중", className: "작업중" },
+  COMPLETED: { label: "완료됨", className: "완료됨" },
+  CANCELED: { label: "취소", className: "취소" },
+};
+
 export default function ReservationManagePage() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const [currentPage, setCurrentPage] = useState(1);
+  const limit = 8;
+  const pageGroupSize = 5;
+
+  const reservationId = searchParams.get("reservationId");
+  const {
+    recentReservations: reservations,
+    totalCount,
+    loading,
+  } = useSelector((state) => state.adminReservation);
+
+  useEffect(() => {
+    dispatch(
+      fetchRecentReservations({
+        page: reservationId ? 1 : currentPage,
+        limit,
+        orderBy: "serviceStartTime",
+        sortBy: "ASC",
+        reservationId: reservationId || "",
+      })
+    );
+  }, [dispatch, currentPage, reservationId]);
+
+  const totalPages = Math.ceil((totalCount || 0) / limit) || 1;
+  const currentGroup = Math.ceil(currentPage / pageGroupSize);
+  const startPage = (currentGroup - 1) * pageGroupSize + 1;
+  const endPage = Math.min(startPage + pageGroupSize - 1, totalPages);
+
+  const handlePageChange = (page) => {
+    if (page >= 1 && page <= totalPages) setCurrentPage(page);
+  };
+
+  const handleClearSearch = () => {
+    setCurrentPage(1);
+    navigate("/reservation", { replace: true });
+  };
+
   return (
-    <div className="reservationmanage-container">
-      {/* 설명 문구 */}
-      <h1 className="reservationmanage-greeting">
-        접수된 예약을 확인하고, 진행 상태를 관리할 수 있습니다.
-      </h1>
-
-      {/* 흰 박스 */}
-      <section className="reservationmanage-table-wrapper">
-        <div className="reservationmanage-table">
-
-          {/* 테이블 */}
-          <table className="reservation-table">
-            <thead>
-              <tr>
-                <th>예약ID</th>
-                <th>고객명</th>
-                <th>업체명</th>
-                <th>기사명</th>
-                <th>예약 날짜</th>
-                <th>최근 예약</th>
-                <th>예약진행상태</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              <tr>
-                <td>1</td>
-                <td>홍길동</td>
-                <td>한옥커피</td>
-                <td>김정현</td>
-                <td>2025-12-31</td>
-                <td>09:00~10:00</td>
-                <td><span className="status-badge greencolor">작업중</span></td>
-              </tr>
-
-              <tr>
-                <td>2</td>
-                <td>홍길동</td>
-                <td>커피명가</td>
-                <td>김정현</td>
-                <td>2025-12-31</td>
-                <td>09:00~10:00</td>
-                <td><span className="status-badge redcolor">취소</span></td>
-              </tr>
-
-              <tr>
-                <td>3</td>
-                <td>홍길동</td>
-                <td>Cafe Spell</td>
-                <td>김정현</td>
-                <td>2025-12-31</td>
-                <td>09:00~10:00</td>
-                <td><span className="status-badge bluecolor">접수됨</span></td>
-              </tr>
-
-              <tr>
-                <td>4</td>
-                <td>홍길동</td>
-                <td>아메리카노1000</td>
-                <td>김정현</td>
-                <td>2025-12-31</td>
-                <td>09:00~10:00</td>
-                <td><span className="status-badge purplecolor">확정됨</span></td>
-              </tr>
-
-              <tr>
-                <td>5</td>
-                <td>홍길동</td>
-                <td>맥다방</td>
-                <td>김정현</td>
-                <td>2025-12-31</td>
-                <td>09:00~10:00</td>
-                <td><span className="status-badge orangecolor">완료됨</span></td>
-              </tr>
-            </tbody>
-          </table>
-
-          {/* 페이지네이션 */}
-          <div className="pagination">
-            <button className="page-btn">&lt;&lt;</button>
-            <button className="page-btn active">1</button>
-            <button className="page-btn">2</button>
-            <button className="page-btn">3</button>
-            <button className="page-btn">4</button>
-            <button className="page-btn">&gt;&gt;</button>
+    <div className="reservation-manage-container">
+      <h1 className="reservation-manage-greeting">전체 예약 관리</h1>
+      <section className="reservation-manage-table-wrapper">
+        <div className="table-header">
+          <div className="header-title-area">
+            {reservationId ? (
+              <div className="search-info-badge">
+                <span className="search-icon">🔍</span>
+                예약 번호 <strong>[{reservationId}]</strong> 검색 결과
+                <button
+                  className="clear-search-btn"
+                  onClick={handleClearSearch}
+                >
+                  전체 보기
+                </button>
+              </div>
+            ) : (
+              <h2>
+                예약 목록{" "}
+                <span>
+                  (페이지: {currentPage} / {totalPages})
+                </span>
+              </h2>
+            )}
           </div>
-
+          <div className="header-stats">
+            총 <strong>{totalCount || 0}</strong> 건
+          </div>
         </div>
+
+        <div className="reservation-manage-table">
+          <div className="manage-table-row table-head">
+            <div>예약 ID</div>
+            <div>고객명</div>
+            <div>업체명</div>
+            <div>기사명</div>
+            <div>예약 날짜</div>
+            <div>서비스 시간</div>
+            <div>상태</div>
+          </div>
+          <div className={`manage-table-body ${loading ? "is-loading" : ""}`}>
+            {reservations?.length > 0
+              ? reservations.map((row) => (
+                  <div
+                    key={row.id}
+                    className={`manage-table-row ${
+                      Number(reservationId) === row.id ? "highlighted-row" : ""
+                    }`}
+                  >
+                    <div className="id-cell">{row.id}</div>
+                    <div>{row.user?.name || "-"}</div>
+                    <div>{row.business?.name || "-"}</div>
+                    <div className={!row.engineer ? "unassigned" : ""}>
+                      {row.engineer?.name || "미배정"}
+                    </div>
+                    <div>{row.reservedDate}</div>
+                    <div>
+                      {row.serviceStartTime?.split(" ")[1].substring(0, 5)}~
+                      {row.serviceEndTime?.split(" ")[1].substring(0, 5)}
+                    </div>
+                    <div>
+                      <span
+                        className={`status-badge ${
+                          STATUS_MAP[row.status]?.className || ""
+                        }`}
+                      >
+                        {STATUS_MAP[row.status]?.label || row.status}
+                      </span>
+                    </div>
+                  </div>
+                ))
+              : !loading && (
+                  <div className="manage-table-row no-data">
+                    내역이 없습니다.
+                  </div>
+                )}
+          </div>
+        </div>
+
+        {!reservationId && totalPages > 1 && (
+          <div className="pagination">
+            <button
+              className="page-btn"
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              &lt;
+            </button>
+            {Array.from(
+              { length: endPage - startPage + 1 },
+              (_, i) => startPage + i
+            ).map((num) => (
+              <button
+                key={num}
+                className={`page-btn ${currentPage === num ? "active" : ""}`}
+                onClick={() => handlePageChange(num)}
+              >
+                {num}
+              </button>
+            ))}
+            <button
+              className="page-btn"
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+            >
+              &gt;
+            </button>
+          </div>
+        )}
       </section>
     </div>
   );

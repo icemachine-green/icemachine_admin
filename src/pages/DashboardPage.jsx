@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchDashboardStats,
   fetchRecentReservations,
-  fetchReservationDetail, // 상세 조회를 위한 Thunk 추가
-} from "../store/thunks/adminReservationThunk";
-import ReservationDetailModal from "./ReservationDetailModal"; // 모달 컴포넌트 추가
+  fetchReservationDetail,
+} from "../store/thunks/adminReservationThunk.js";
+import ReservationDetailModal from "./ReservationDetailModal.jsx";
 import "./DashboardPage.css";
 
 const STATUS_MAP = {
@@ -19,7 +19,7 @@ const STATUS_MAP = {
 export default function DashboardPage() {
   const dispatch = useDispatch();
   const [currentPage, setCurrentPage] = useState(1);
-  const limit = 5;
+  const limit = 5; // 대시보드는 5개 고정
   const pageGroupSize = 5;
 
   const { stats, recentReservations, loading, totalCount } = useSelector(
@@ -28,13 +28,13 @@ export default function DashboardPage() {
 
   useEffect(() => {
     dispatch(fetchDashboardStats());
-    // [중요] 정렬 기준을 reservedDate로 명시적 고정
+    // 관리 페이지와 정렬 기준 통일 (날짜 최신 + 시간 빠른순)
     dispatch(
       fetchRecentReservations({
         page: currentPage,
         limit: limit,
-        orderBy: "reservedDate",
-        sortBy: "DESC",
+        orderBy: "serviceStartTime",
+        sortBy: "ASC",
       })
     );
   }, [dispatch, currentPage]);
@@ -49,7 +49,6 @@ export default function DashboardPage() {
     setCurrentPage(pageNumber);
   };
 
-  // 상세보기 클릭 핸들러
   const handleOpenDetail = (id) => {
     dispatch(fetchReservationDetail(id));
   };
@@ -76,12 +75,11 @@ export default function DashboardPage() {
           <h2>
             최근 예약{" "}
             <span>
-              {" "}
               (페이지: {currentPage} / {totalPages})
             </span>
           </h2>
           <span>
-            오늘 예약 : <strong>{stats.TOTAL || 0}</strong> 건
+            총 내역 : <strong>{totalCount || 0}</strong> 건
           </span>
         </div>
 
@@ -96,53 +94,47 @@ export default function DashboardPage() {
             <div>상태</div>
           </div>
 
-          {recentReservations?.length > 0 ? (
-            recentReservations.map((row) => (
-              <div key={row.id} className="table-row">
-                <div>{row.id}</div>
-                <div>{row.user?.name || "-"}</div>
-                <div>{row.business?.name || "-"}</div>
-                <div className={!row.engineer ? "unassigned" : ""}>
-                  {row.engineer?.name || "미배정"}
+          <div
+            className={`dashboard-table-body ${loading ? "is-loading" : ""}`}
+          >
+            {recentReservations?.length > 0 ? (
+              recentReservations.map((row) => (
+                <div key={row.id} className="table-row">
+                  <div>{row.id}</div>
+                  <div>{row.user?.name || "-"}</div>
+                  <div>{row.business?.name || "-"}</div>
+                  <div className={!row.engineer ? "unassigned" : ""}>
+                    {row.engineer?.name || "미배정"}
+                  </div>
+                  <div>{row.reservedDate}</div>
+                  <div>
+                    <button
+                      className="detail-btn"
+                      onClick={() => handleOpenDetail(row.id)}
+                    >
+                      상세보기
+                    </button>
+                  </div>
+                  <div>
+                    <span
+                      className={`status-badge ${
+                        STATUS_MAP[row.status]?.label || ""
+                      }`}
+                    >
+                      {STATUS_MAP[row.status]?.label || row.status}
+                    </span>
+                  </div>
                 </div>
-                <div>{row.reservedDate}</div>
-                <div>
-                  {/* 상세보기 버튼에 핸들러 연결 */}
-                  <button
-                    className="detail-btn"
-                    onClick={() => handleOpenDetail(row.id)}
-                  >
-                    상세보기
-                  </button>
-                </div>
-                <div>
-                  <span
-                    className={`status-badge ${
-                      STATUS_MAP[row.status]?.label || ""
-                    }`}
-                  >
-                    {STATUS_MAP[row.status]?.label || row.status}
-                  </span>
-                </div>
+              ))
+            ) : (
+              <div className="table-row no-data">
+                {loading ? "데이터 로딩 중..." : "해당 내역이 없습니다."}
               </div>
-            ))
-          ) : (
-            <div
-              className="table-row no-data"
-              style={{ justifyContent: "center", padding: "40px" }}
-            >
-              {loading ? "데이터 로딩 중..." : "해당 내역이 없습니다."}
-            </div>
-          )}
+            )}
+          </div>
         </div>
 
         <div className="pagination">
-          {currentPage >= 6 && (
-            <button className="page-btn" onClick={() => handlePageChange(1)}>
-              &lt;&lt;
-            </button>
-          )}
-
           <button
             className="page-btn"
             onClick={() => handlePageChange(currentPage - 1)}
@@ -150,7 +142,6 @@ export default function DashboardPage() {
           >
             &lt;
           </button>
-
           {Array.from(
             { length: endPage - startPage + 1 },
             (_, i) => startPage + i
@@ -163,7 +154,6 @@ export default function DashboardPage() {
               {num}
             </button>
           ))}
-
           <button
             className="page-btn"
             onClick={() => handlePageChange(currentPage + 1)}
@@ -173,8 +163,6 @@ export default function DashboardPage() {
           </button>
         </div>
       </section>
-
-      {/* 예약 상세 모달 추가 */}
       <ReservationDetailModal />
     </div>
   );
