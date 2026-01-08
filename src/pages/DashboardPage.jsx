@@ -35,17 +35,10 @@ export default function DashboardPage() {
 
   const loadDashboardData = useCallback(async () => {
     const todayStr = dayjs().format("YYYY-MM-DD");
-    // 통계에 보낼 파라미터 결정
     const statsDateParam = statMode === "today" ? todayStr : null;
 
-    // 🔍 [콘솔 로그 1] 요청 파라미터 확인
-    console.log(
-      `%c[요청 시작] 모드: ${statMode} | 파라미터: ${statsDateParam}`,
-      "color: #4f6bed; font-weight: bold"
-    );
-
     try {
-      const [statsAction, listAction] = await Promise.all([
+      await Promise.all([
         dispatch(fetchDashboardStats(statsDateParam)),
         dispatch(
           fetchRecentReservations({
@@ -57,16 +50,6 @@ export default function DashboardPage() {
           })
         ),
       ]);
-
-      // 🔍 [콘솔 로그 2] 통계 응답 데이터 확인
-      if (statsAction.payload) {
-        console.log(
-          "%c[통계 응답]",
-          "color: #3aa76d; font-weight: bold",
-          statsAction.payload.data
-        );
-      }
-
       setLastUpdated(dayjs());
     } catch (err) {
       console.error("❌ [API 에러]:", err);
@@ -83,6 +66,7 @@ export default function DashboardPage() {
     };
   }, [loadDashboardData]);
 
+  // 페이지네이션 계산
   const totalPages = Math.ceil((totalCount || 0) / limit) || 1;
   const currentGroup = Math.ceil(currentPage / pageGroupSize);
   const startPage = (currentGroup - 1) * pageGroupSize + 1;
@@ -108,7 +92,6 @@ export default function DashboardPage() {
             <span className="live-dot"></span>
             데이터 갱신: {lastUpdated.format("HH:mm:ss")} |
             <span className="current-time">
-              {" "}
               현재 시각: {now.format("HH:mm:ss")}
             </span>
           </div>
@@ -209,19 +192,26 @@ export default function DashboardPage() {
                   gridColumn: "span 7",
                   padding: "100px 0",
                   color: "#999",
+                  textAlign: "center",
                 }}
               >
-                {loading
-                  ? "데이터 로딩 중..."
-                  : "오늘 이후 예정된 예약 내역이 없습니다."}
+                {loading ? "데이터 로딩 중..." : "예정된 예약 내역이 없습니다."}
               </div>
             )}
           </div>
         </div>
 
         <div className="pagination">
+          {currentPage > pageGroupSize && (
+            <button
+              className="page-btn arrow"
+              onClick={() => handlePageChange(1)}
+            >
+              &lt;&lt;
+            </button>
+          )}
           <button
-            className="page-btn"
+            className="page-btn arrow"
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage === 1}
           >
@@ -240,12 +230,20 @@ export default function DashboardPage() {
             </button>
           ))}
           <button
-            className="page-btn"
+            className="page-btn arrow"
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
           >
             &gt;
           </button>
+          {endPage < totalPages && (
+            <button
+              className="page-btn arrow"
+              onClick={() => handlePageChange(totalPages)}
+            >
+              &gt;&gt;
+            </button>
+          )}
         </div>
       </section>
       <ReservationDetailModal />

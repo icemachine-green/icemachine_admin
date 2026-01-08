@@ -1,5 +1,3 @@
-/* DashboardPage.css */
-
 .dashboard-container {
   height: 100%;
   padding: 32px;
@@ -16,7 +14,7 @@
 
 .dashboard-greeting {
   font-size: 25px;
-  margin-bottom: 8px; /* sync-info와 간격 조절 */
+  margin-bottom: 8px;
 }
 
 .dashboard-sync-info {
@@ -33,9 +31,21 @@
   background-color: #3aa76d;
   border-radius: 50%;
   display: inline-block;
+  animation: pulse 2s infinite;
 }
 
-/* 통계 토글 버튼 스타일 추가 */
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
 .stats-toggle-area {
   display: flex;
   align-items: center;
@@ -74,7 +84,6 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* 통계 카드 영역 */
 .dashboard-stats {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -102,7 +111,6 @@
   font-weight: 700;
 }
 
-/* 상태 색상 */
 .blue {
   color: #4f6bed;
 }
@@ -119,7 +127,6 @@
   color: #e14b4b;
 }
 
-/* 테이블 래퍼 */
 .dashboard-table-wrapper {
   background-color: #ffffff;
   border-radius: 16px;
@@ -149,11 +156,10 @@
   color: #555;
 }
 
-/* Grid 기반 테이블 */
 .dashboard-table {
   display: flex;
   flex-direction: column;
-  height: 319px;
+  min-height: 319px;
 }
 
 .table-row {
@@ -169,7 +175,6 @@
 .table-row:last-child {
   border-bottom: none;
 }
-
 .table-head {
   font-weight: 700;
   color: #777;
@@ -222,11 +227,17 @@
   font-weight: 600;
 }
 
+.is-loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
 .pagination {
   margin-top: auto;
   padding-top: 20px;
   display: flex;
   justify-content: center;
+  align-items: center;
   gap: 6px;
 }
 
@@ -239,10 +250,26 @@
   font-size: 13px;
   color: #555;
   cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.2s;
 }
 
+.page-btn:hover:not(:disabled) {
+  background-color: #f0f0f5;
+}
 .page-btn.active {
   background-color: #2f2f2f;
   color: #fff;
   border-color: #2f2f2f;
+  font-weight: bold;
+}
+.page-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.page-btn.arrow {
+  font-weight: bold;
+  background-color: #f9f9fb;
 }
