@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import dayjs from "dayjs";
 import {
@@ -22,6 +22,10 @@ export default function DashboardPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [now, setNow] = useState(dayjs());
   const [lastUpdated, setLastUpdated] = useState(dayjs());
+
+  // 필터 상태: "today" (오늘만), "future" (오늘부터 미래 전체)
+  const [statMode, setStatMode] = useState("today");
+
   const limit = 5;
   const pageGroupSize = 5;
 
@@ -29,36 +33,55 @@ export default function DashboardPage() {
     (state) => state.adminReservation
   );
 
-  useEffect(() => {
-    const loadDashboardData = async () => {
-      await Promise.all([
-        dispatch(fetchDashboardStats()),
+  const loadDashboardData = useCallback(async () => {
+    const todayStr = dayjs().format("YYYY-MM-DD");
+    // 통계에 보낼 파라미터 결정
+    const statsDateParam = statMode === "today" ? todayStr : null;
+
+    // 🔍 [콘솔 로그 1] 요청 파라미터 확인
+    console.log(
+      `%c[요청 시작] 모드: ${statMode} | 파라미터: ${statsDateParam}`,
+      "color: #4f6bed; font-weight: bold"
+    );
+
+    try {
+      const [statsAction, listAction] = await Promise.all([
+        dispatch(fetchDashboardStats(statsDateParam)),
         dispatch(
           fetchRecentReservations({
             page: currentPage,
             limit: limit,
-            orderBy: "serviceStartTime",
+            orderBy: "reservedDate",
             sortBy: "ASC",
+            startDate: todayStr,
           })
         ),
       ]);
+
+      // 🔍 [콘솔 로그 2] 통계 응답 데이터 확인
+      if (statsAction.payload) {
+        console.log(
+          "%c[통계 응답]",
+          "color: #3aa76d; font-weight: bold",
+          statsAction.payload.data
+        );
+      }
+
       setLastUpdated(dayjs());
-    };
+    } catch (err) {
+      console.error("❌ [API 에러]:", err);
+    }
+  }, [dispatch, currentPage, limit, statMode]);
 
-    // 1. 첫 로딩
+  useEffect(() => {
     loadDashboardData();
-
-    // 2. 1분마다 데이터 갱신
     const pollingTimer = setInterval(loadDashboardData, 60000);
-
-    // 3. 1초마다 시계 업데이트
     const clockTimer = setInterval(() => setNow(dayjs()), 1000);
-
     return () => {
       clearInterval(pollingTimer);
       clearInterval(clockTimer);
     };
-  }, [dispatch, currentPage]);
+  }, [loadDashboardData]);
 
   const totalPages = Math.ceil((totalCount || 0) / limit) || 1;
   const currentGroup = Math.ceil(currentPage / pageGroupSize);
@@ -77,7 +100,7 @@ export default function DashboardPage() {
   return (
     <div className="dashboard-container">
       <div className="dashboard-header-flex">
-        <div>
+        <div className="header-left">
           <h1 className="dashboard-greeting">
             안녕하세요, 관리자님! 대시보드입니다.
           </h1>
@@ -90,12 +113,32 @@ export default function DashboardPage() {
             </span>
           </div>
         </div>
+
+        <div className="stats-toggle-area">
+          <span className="toggle-label">통계 현황 기준:</span>
+          <div className="toggle-group">
+            <button
+              className={`toggle-btn ${statMode === "today" ? "active" : ""}`}
+              onClick={() => setStatMode("today")}
+            >
+              오늘
+            </button>
+            <button
+              className={`toggle-btn ${statMode === "future" ? "active" : ""}`}
+              onClick={() => setStatMode("future")}
+            >
+              전체 (오늘~)
+            </button>
+          </div>
+        </div>
       </div>
 
       <section className="dashboard-stats">
         {Object.keys(STATUS_MAP).map((key) => (
           <div key={key} className="stat-card">
-            <strong>{(stats[key] || 0).toLocaleString()}</strong>
+            <strong className={STATUS_MAP[key].color}>
+              {(stats[key] || 0).toLocaleString()}
+            </strong>
             <span className={STATUS_MAP[key].color}>
               {STATUS_MAP[key].label}
             </span>
@@ -106,7 +149,7 @@ export default function DashboardPage() {
       <section className="dashboard-table-wrapper">
         <div className="table-header">
           <h2>
-            최근 예약{" "}
+            오늘 이후 예약{" "}
             <span>
               (페이지: {currentPage} / {totalPages})
             </span>
@@ -160,8 +203,17 @@ export default function DashboardPage() {
                 </div>
               ))
             ) : (
-              <div className="table-row no-data">
-                {loading ? "데이터 로딩 중..." : "해당 내역이 없습니다."}
+              <div
+                className="table-row no-data"
+                style={{
+                  gridColumn: "span 7",
+                  padding: "100px 0",
+                  color: "#999",
+                }}
+              >
+                {loading
+                  ? "데이터 로딩 중..."
+                  : "오늘 이후 예정된 예약 내역이 없습니다."}
               </div>
             )}
           </div>

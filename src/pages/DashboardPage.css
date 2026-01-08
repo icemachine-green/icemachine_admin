@@ -7,9 +7,71 @@
   box-sizing: border-box;
 }
 
+.dashboard-header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 40px;
+}
+
 .dashboard-greeting {
   font-size: 25px;
-  margin-bottom: 40px;
+  margin-bottom: 8px; /* sync-info와 간격 조절 */
+}
+
+.dashboard-sync-info {
+  font-size: 14px;
+  color: #666;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.live-dot {
+  width: 8px;
+  height: 8px;
+  background-color: #3aa76d;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+/* 통계 토글 버튼 스타일 추가 */
+.stats-toggle-area {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #e6e6e8;
+  padding: 6px 12px;
+  border-radius: 10px;
+}
+
+.toggle-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #555;
+}
+
+.toggle-group {
+  display: flex;
+  gap: 4px;
+}
+
+.toggle-btn {
+  border: none;
+  background: none;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #777;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.toggle-btn.active {
+  background-color: #fff;
+  color: #2f2f2f;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* 통계 카드 영역 */
@@ -63,6 +125,8 @@
   border-radius: 16px;
   padding: 24px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
 }
 
 .table-header {
@@ -85,16 +149,15 @@
   color: #555;
 }
 
-/* Grid 기반 테이블 (기존 높이 유지) */
+/* Grid 기반 테이블 */
 .dashboard-table {
   display: flex;
   flex-direction: column;
-  height: 319px; /* 기존 높이 복구 */
+  height: 319px;
 }
 
 .table-row {
   display: grid;
-  /* 기존 그리드 비율 유지 */
   grid-template-columns: 0.8fr 1fr 1.2fr 1fr 1.2fr 1fr 0.8fr;
   align-items: center;
   padding: 14px 0;
@@ -113,7 +176,6 @@
   border-bottom: 2px solid #d9d9d9;
 }
 
-/* 상세보기 버튼 (관리 영역) */
 .detail-btn {
   background-color: #f5f6f8;
   border: 1px solid #ddd;
@@ -129,7 +191,6 @@
   color: #fff;
 }
 
-/* 상태 배지 (기존 배지 스타일 유지) */
 .status-badge {
   display: inline-block;
   padding: 5px 12px;
@@ -161,7 +222,6 @@
   font-weight: 600;
 }
 
-/* 페이지네이션 */
 .pagination {
   margin-top: auto;
   padding-top: 20px;

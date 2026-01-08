@@ -3,9 +3,10 @@ import { adminReservationApi } from "../../api/adminReservationApi";
 
 export const fetchDashboardStats = createAsyncThunk(
   "adminReservation/fetchStats",
-  async (_, { rejectWithValue }) => {
+  async (date, { rejectWithValue }) => {
+    // 여기서 date(인자)를 반드시 받아야 함!
     try {
-      const response = await adminReservationApi.getDashboardStats();
+      const response = await adminReservationApi.getDashboardStats(date);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || "통계 로딩 실패");

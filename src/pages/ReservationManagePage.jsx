@@ -37,7 +37,7 @@ export default function ReservationManagePage() {
   const [now, setNow] = useState(dayjs());
   const [lastUpdated, setLastUpdated] = useState(dayjs());
 
-  const limit = 10;
+  const limit = 8;
   const reservationId = searchParams.get("reservationId") || "";
   const selectedDate = searchParams.get("date") || "";
 
@@ -49,16 +49,23 @@ export default function ReservationManagePage() {
 
   useEffect(() => {
     const loadData = () => {
+      const todayStr = dayjs().format("YYYY-MM-DD");
+
       dispatch(
         fetchRecentReservations({
           page: currentPage,
           limit,
           reservationId,
-          reservedDate: selectedDate,
+          reservedDate: selectedDate, // 특정 날짜 선택 시 해당 날짜만
+          // 날짜 선택이나 ID 검색이 없을 때만 오늘 이후 데이터로 제한
+          startDate: !selectedDate && !reservationId ? todayStr : null,
+          orderBy: "reservedDate",
+          sortBy: "ASC",
         })
       );
       setLastUpdated(dayjs());
     };
+
     loadData();
     const pollingTimer = setInterval(loadData, 60000);
     const clockTimer = setInterval(() => setNow(dayjs()), 1000);
@@ -72,7 +79,11 @@ export default function ReservationManagePage() {
     <div className="reservation-manage-container">
       <div className="reservation-manage-header-flex">
         <div className="title-area">
-          <h1 className="reservation-manage-greeting">전체 예약 관리</h1>
+          <h1 className="reservation-manage-greeting">
+            {!selectedDate && !reservationId
+              ? "전체 예약 관리 (오늘 이후)"
+              : "예약 검색 결과"}
+          </h1>
           <div className="manage-sync-info">
             <span className="live-dot"></span>
             마지막 갱신: {lastUpdated.format("HH:mm:ss")} |
@@ -98,7 +109,6 @@ export default function ReservationManagePage() {
         </div>
 
         <div className="reservation-manage-table">
-          {/* 테이블 헤더 */}
           <div className="manage-table-row table-head">
             <div className="col-id">ID</div>
             <div className="col-user">고객 정보</div>
@@ -110,31 +120,26 @@ export default function ReservationManagePage() {
             <div className="col-status">상태</div>
           </div>
 
-          {/* 테이블 바디 */}
           <div className={`manage-table-body ${loading ? "is-loading" : ""}`}>
             {reservations?.length > 0 ? (
               reservations.map((row) => (
                 <div key={row.id} className="manage-table-row">
                   <div className="col-id">{row.id}</div>
-
                   <div className="col-user info-cell">
                     <strong>{row.user?.name || "-"}</strong>
                     <span className="sub-info">
                       {row.user?.phoneNumber || "-"}
                     </span>
                   </div>
-
                   <div className="col-business" title={row.business?.name}>
                     {row.business?.name || "-"}
                   </div>
-
                   <div className="col-machine info-cell">
                     <strong>{row.iceMachine?.modelName || "-"}</strong>
                     <span className="sub-info">
                       {formatSize(row.iceMachine?.sizeType)}
                     </span>
                   </div>
-
                   <div className="col-engineer info-cell">
                     {row.engineer ? (
                       <>
@@ -147,13 +152,11 @@ export default function ReservationManagePage() {
                       <span className="unassigned-text">미배정</span>
                     )}
                   </div>
-
                   <div className="col-service">
                     <span className="service-text">
                       {SERVICE_MAP[row.servicePolicy?.serviceType] || "기타"}
                     </span>
                   </div>
-
                   <div className="col-date info-cell">
                     <strong>{row.reservedDate}</strong>
                     <span className="sub-info">
@@ -166,7 +169,6 @@ export default function ReservationManagePage() {
                         : "00:00"}
                     </span>
                   </div>
-
                   <div className="col-status">
                     <span
                       className={`status-badge ${
@@ -180,7 +182,9 @@ export default function ReservationManagePage() {
               ))
             ) : (
               <div className="no-data-msg">
-                {loading ? "데이터 로딩 중..." : "예약 내역이 없습니다."}
+                {loading
+                  ? "데이터 로딩 중..."
+                  : "조건에 맞는 예약 내역이 없습니다."}
               </div>
             )}
           </div>

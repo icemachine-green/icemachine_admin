@@ -4,8 +4,10 @@ const ADMIN_RESERVATION_URL = "/api/admin";
 
 export const adminReservationApi = {
   // 대시보드 통계 조회
-  getDashboardStats: async () => {
-    return await axiosInstance.get(`${ADMIN_RESERVATION_URL}/dashboard/stats`);
+  getDashboardStats: (startDate) => {
+    return axiosInstance.get("/api/admin/dashboard/stats", {
+      params: { startDate }, // { startDate: "2024-..." } 형태로 전달됨
+    });
   },
 
   // 예약 목록 조회 (Thunk와 인자 구조 통일)
