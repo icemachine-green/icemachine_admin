@@ -205,3 +205,70 @@
   transform: scale(1.005);
   transition: all 0.2s;
 }
+
+/* 실시간 시계 및 갱신 정보 공통 스타일 */
+.reservation-manage-header-flex,
+.dashboard-header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 30px;
+}
+
+.manage-sync-info,
+.dashboard-sync-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #888;
+  margin-top: 6px;
+}
+
+.live-dot {
+  width: 8px;
+  height: 8px;
+  background-color: #52c41a;
+  border-radius: 50%;
+  display: inline-block;
+  animation: pulse 2s infinite;
+}
+
+.current-time {
+  font-weight: 700;
+  color: #0056b3;
+  margin-left: 4px;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(82, 196, 26, 0.7);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 6px rgba(82, 196, 26, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(82, 196, 26, 0);
+  }
+}
+
+/* 관리 페이지 지연 감시 센터 버튼 스타일 */
+.delay-monitor-btn {
+  padding: 10px 18px;
+  background-color: #fff1f0;
+  border: 1px solid #ffa39e;
+  color: #cf1322;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.delay-monitor-btn:hover {
+  background-color: #ffccc7;
+  transform: translateY(-1px);
+}

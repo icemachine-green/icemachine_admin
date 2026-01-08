@@ -14,6 +14,7 @@ import DriverManagePage from "../pages/DriverManagePage.jsx";
 import CustomerManagePage from "../pages/CustomerManagePage.jsx";
 import AdminAccountPage from "../pages/AdminAccountPage.jsx";
 import AdminLoginPage from "../pages/AdminLoginPage.jsx";
+import DelayedReservationPage from "../pages/DelayedReservationPage.jsx";
 
 const router = createBrowserRouter([
   {
@@ -44,6 +45,10 @@ const router = createBrowserRouter([
               {
                 path: "reservation",
                 element: <ReservationManagePage />,
+              },
+              {
+                path: "reservation/delay",
+                element: <DelayedReservationPage />,
               },
               {
                 path: "driver",

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import dayjs from "dayjs";
 import {
   fetchDashboardStats,
   fetchRecentReservations,
@@ -19,7 +20,9 @@ const STATUS_MAP = {
 export default function DashboardPage() {
   const dispatch = useDispatch();
   const [currentPage, setCurrentPage] = useState(1);
-  const limit = 5; // 대시보드는 5개 고정
+  const [now, setNow] = useState(dayjs());
+  const [lastUpdated, setLastUpdated] = useState(dayjs());
+  const limit = 5;
   const pageGroupSize = 5;
 
   const { stats, recentReservations, loading, totalCount } = useSelector(
@@ -27,16 +30,34 @@ export default function DashboardPage() {
   );
 
   useEffect(() => {
-    dispatch(fetchDashboardStats());
-    // 관리 페이지와 정렬 기준 통일 (날짜 최신 + 시간 빠른순)
-    dispatch(
-      fetchRecentReservations({
-        page: currentPage,
-        limit: limit,
-        orderBy: "serviceStartTime",
-        sortBy: "ASC",
-      })
-    );
+    const loadDashboardData = async () => {
+      await Promise.all([
+        dispatch(fetchDashboardStats()),
+        dispatch(
+          fetchRecentReservations({
+            page: currentPage,
+            limit: limit,
+            orderBy: "serviceStartTime",
+            sortBy: "ASC",
+          })
+        ),
+      ]);
+      setLastUpdated(dayjs());
+    };
+
+    // 1. 첫 로딩
+    loadDashboardData();
+
+    // 2. 1분마다 데이터 갱신
+    const pollingTimer = setInterval(loadDashboardData, 60000);
+
+    // 3. 1초마다 시계 업데이트
+    const clockTimer = setInterval(() => setNow(dayjs()), 1000);
+
+    return () => {
+      clearInterval(pollingTimer);
+      clearInterval(clockTimer);
+    };
   }, [dispatch, currentPage]);
 
   const totalPages = Math.ceil((totalCount || 0) / limit) || 1;
@@ -55,9 +76,21 @@ export default function DashboardPage() {
 
   return (
     <div className="dashboard-container">
-      <h1 className="dashboard-greeting">
-        안녕하세요, 관리자님! 대시보드입니다.
-      </h1>
+      <div className="dashboard-header-flex">
+        <div>
+          <h1 className="dashboard-greeting">
+            안녕하세요, 관리자님! 대시보드입니다.
+          </h1>
+          <div className="dashboard-sync-info">
+            <span className="live-dot"></span>
+            데이터 갱신: {lastUpdated.format("HH:mm:ss")} |
+            <span className="current-time">
+              {" "}
+              현재 시각: {now.format("HH:mm:ss")}
+            </span>
+          </div>
+        </div>
+      </div>
 
       <section className="dashboard-stats">
         {Object.keys(STATUS_MAP).map((key) => (

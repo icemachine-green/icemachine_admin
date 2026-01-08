@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams, useNavigate } from "react-router-dom";
+import dayjs from "dayjs";
 import { fetchRecentReservations } from "../store/thunks/adminReservationThunk.js";
 import "./ReservationManagePage.css";
 
@@ -17,10 +18,13 @@ export default function ReservationManagePage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [currentPage, setCurrentPage] = useState(1);
+  const [now, setNow] = useState(dayjs());
+  const [lastUpdated, setLastUpdated] = useState(dayjs());
+
   const limit = 8;
   const pageGroupSize = 5;
-
   const reservationId = searchParams.get("reservationId");
+
   const {
     recentReservations: reservations,
     totalCount,
@@ -28,15 +32,32 @@ export default function ReservationManagePage() {
   } = useSelector((state) => state.adminReservation);
 
   useEffect(() => {
-    dispatch(
-      fetchRecentReservations({
-        page: reservationId ? 1 : currentPage,
-        limit,
-        orderBy: "serviceStartTime",
-        sortBy: "ASC",
-        reservationId: reservationId || "",
-      })
-    );
+    const loadData = () => {
+      dispatch(
+        fetchRecentReservations({
+          page: reservationId ? 1 : currentPage,
+          limit,
+          orderBy: "serviceStartTime",
+          sortBy: "ASC",
+          reservationId: reservationId || "",
+        })
+      );
+      setLastUpdated(dayjs()); // 데이터 로드 완료 시점 기록
+    };
+
+    // 1. 첫 로딩
+    loadData();
+
+    // 2. 1분마다 API 호출 (폴링)
+    const pollingTimer = setInterval(loadData, 60000);
+
+    // 3. 1초마다 시계 업데이트
+    const clockTimer = setInterval(() => setNow(dayjs()), 1000);
+
+    return () => {
+      clearInterval(pollingTimer);
+      clearInterval(clockTimer);
+    };
   }, [dispatch, currentPage, reservationId]);
 
   const totalPages = Math.ceil((totalCount || 0) / limit) || 1;
@@ -55,7 +76,26 @@ export default function ReservationManagePage() {
 
   return (
     <div className="reservation-manage-container">
-      <h1 className="reservation-manage-greeting">전체 예약 관리</h1>
+      <div className="reservation-manage-header-flex">
+        <div>
+          <h1 className="reservation-manage-greeting">전체 예약 관리</h1>
+          <div className="manage-sync-info">
+            <span className="live-dot"></span>
+            마지막 갱신: {lastUpdated.format("HH:mm:ss")} |
+            <span className="current-time">
+              {" "}
+              현재 시각: {now.format("HH:mm:ss")}
+            </span>
+          </div>
+        </div>
+        <button
+          className="delay-monitor-btn"
+          onClick={() => navigate("/reservation/delay")}
+        >
+          🚨 작업 지연 감시 센터
+        </button>
+      </div>
+
       <section className="reservation-manage-table-wrapper">
         <div className="table-header">
           <div className="header-title-area">
