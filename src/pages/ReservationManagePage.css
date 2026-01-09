@@ -48,7 +48,6 @@
   }
 }
 
-/* 지연 감시 버튼 */
 .delay-monitor-btn {
   background-color: #fff;
   border: 1px solid #e14b4b;
@@ -88,7 +87,6 @@
 /* 테이블 그리드 레이아웃 */
 .manage-table-row {
   display: grid;
-  /* ID(0.5) 고객(1.2) 매장(1.5) 모델(1.8) 기사(1.2) 서비스(0.8) 날짜(1.5) 상태(0.8) */
   grid-template-columns: 0.5fr 1.2fr 1.5fr 1.8fr 1.2fr 0.8fr 1.5fr 0.8fr;
   width: 100%;
   align-items: center;
@@ -106,7 +104,6 @@
   padding: 10px 0;
 }
 
-/* 정렬 일치화 */
 .col-id,
 .col-service,
 .col-date,
@@ -122,7 +119,6 @@
   padding-left: 15px;
 }
 
-/* 2단 텍스트 구조 */
 .info-cell {
   display: flex;
   flex-direction: column;
@@ -136,7 +132,6 @@
   font-weight: 400;
 }
 
-/* 텍스트 넘침 방지 */
 .col-business,
 .col-machine strong {
   white-space: nowrap;
@@ -145,7 +140,6 @@
   display: block;
 }
 
-/* 상태 및 서비스 스타일 */
 .service-text {
   font-weight: 600;
   color: #444;
@@ -155,45 +149,81 @@
   font-weight: 600;
 }
 
-.status-badge {
-  display: inline-block;
-  padding: 5px 0;
+/* --- 드롭다운(셀렉트 박스) 최종 디자인 --- */
+.status-select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  width: 95px;
+  height: 32px;
+  /* 상하 패딩을 동일하게 주어 텍스트 수직 중앙 확보 */
+  padding: 0 24px 0 10px;
   border-radius: 6px;
-  font-size: 12px;
-  font-weight: 600;
-  color: #fff;
-  width: 75px;
+
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffffff !important;
+
+  /* 텍스트 정렬 */
   text-align: center;
+  text-align-last: center;
+
+  border: none;
+  cursor: pointer;
+  outline: none;
+
+  /* 수직 정렬 방해 요소 제거 */
+  line-height: normal;
+
+  /* 화살표 아이콘 */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='white' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: calc(100% - 8px) center;
+  background-size: 10px;
+
+  transition: all 0.2s ease;
 }
 
-.status-pending {
-  background-color: #4f6bed;
+/* 배경색 테마 */
+.status-select.status-pending {
+  background-color: #4f6bed !important;
 }
-.status-confirmed {
-  background-color: #9b6ef3;
+.status-select.status-confirmed {
+  background-color: #9b6ef3 !important;
 }
-.status-start {
-  background-color: #3aa76d;
+.status-select.status-start {
+  background-color: #3aa76d !important;
 }
-.status-completed {
-  background-color: #8b8b8b;
+.status-select.status-completed {
+  background-color: #8b8b8b !important;
 }
-.status-canceled {
-  background-color: #e14b4b;
+.status-select.status-canceled {
+  background-color: #e14b4b !important;
 }
 
+.status-select:hover {
+  filter: brightness(1.1);
+}
+
+/* 드롭다운 리스트(option) 스타일 */
+.status-select option {
+  background-color: #ffffff;
+  color: #333333;
+  padding: 10px;
+  font-weight: normal;
+}
+
+/* 페이지네이션 및 기타 */
 .no-data-msg {
   padding: 60px;
   text-align: center;
   color: #999;
 }
-
 .is-loading {
   opacity: 0.6;
   pointer-events: none;
 }
-
-/* --- 추가된 페이지네이션 섹션 --- */
 .pagination {
   display: flex;
   justify-content: center;
@@ -202,11 +232,9 @@
   margin-top: 32px;
   padding-bottom: 10px;
 }
-
 .page-btn {
   min-width: 36px;
   height: 36px;
-  padding: 0 8px;
   border: 1px solid #ddd;
   background-color: #fff;
   border-radius: 6px;
@@ -214,32 +242,22 @@
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s ease;
   display: flex;
   justify-content: center;
   align-items: center;
+  transition: all 0.2s ease;
 }
-
 .page-btn:hover:not(:disabled) {
   background-color: #f0f0f5;
-  border-color: #bbb;
   color: #333;
 }
-
 .page-btn.active {
   background-color: #4f6bed;
   border-color: #4f6bed;
   color: #fff;
   font-weight: 700;
 }
-
 .page-btn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
-}
-
-.page-btn.arrow,
-.page-btn.double-arrow {
-  font-weight: 700;
-  background-color: #f9f9fb;
 }

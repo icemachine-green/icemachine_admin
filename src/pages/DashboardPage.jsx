@@ -132,7 +132,7 @@ export default function DashboardPage() {
       <section className="dashboard-table-wrapper">
         <div className="table-header">
           <h2>
-            오늘 이후 예약{" "}
+            최신순{" "}
             <span>
               (페이지: {currentPage} / {totalPages})
             </span>

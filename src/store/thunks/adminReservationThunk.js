@@ -39,3 +39,21 @@ export const fetchReservationDetail = createAsyncThunk(
     }
   }
 );
+
+// 예약 상태 변경
+export const updateReservationStatusThunk = createAsyncThunk(
+  "adminReservation/updateStatus",
+  async ({ reservationId, status }, { rejectWithValue }) => {
+    try {
+      const response = await adminReservationApi.updateReservationStatus(
+        reservationId,
+        status
+      );
+      // 서버 응답 규격(createBaseResponse)에 맞춰 data 추출
+      return { reservationId, status, message: response.data.message };
+    } catch (error) {
+      // 에러 응답 규격에 맞춰 전달
+      return rejectWithValue(error.response?.data || "상태 변경 실패");
+    }
+  }
+);

@@ -2,7 +2,10 @@ import React, { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
-import { fetchRecentReservations } from "../store/thunks/adminReservationThunk.js";
+import {
+  fetchRecentReservations,
+  updateReservationStatusThunk,
+} from "../store/thunks/adminReservationThunk.js";
 import "./ReservationManagePage.css";
 
 const STATUS_MAP = {
@@ -33,16 +36,13 @@ export default function ReservationManagePage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
-  // 상태 관리
   const [currentPage, setCurrentPage] = useState(1);
   const [now, setNow] = useState(dayjs());
   const [lastUpdated, setLastUpdated] = useState(dayjs());
 
-  // 상수
   const limit = 8;
   const pageGroupSize = 5;
 
-  // 검색 파라미터
   const reservationId = searchParams.get("reservationId") || "";
   const selectedDate = searchParams.get("date") || "";
 
@@ -52,10 +52,8 @@ export default function ReservationManagePage() {
     loading,
   } = useSelector((state) => state.adminReservation);
 
-  // 데이터 로드 함수
   const loadData = useCallback(() => {
     const todayStr = dayjs().format("YYYY-MM-DD");
-
     dispatch(
       fetchRecentReservations({
         page: currentPage,
@@ -70,12 +68,10 @@ export default function ReservationManagePage() {
     setLastUpdated(dayjs());
   }, [dispatch, currentPage, reservationId, selectedDate]);
 
-  // 검색 조건 변경 시 1페이지로 이동
   useEffect(() => {
     setCurrentPage(1);
   }, [reservationId, selectedDate]);
 
-  // 주기적 갱신 (Polling & Clock)
   useEffect(() => {
     loadData();
     const pollingTimer = setInterval(loadData, 60000);
@@ -86,7 +82,6 @@ export default function ReservationManagePage() {
     };
   }, [loadData]);
 
-  // 페이지네이션 계산
   const totalPages = Math.ceil((totalCount || 0) / limit) || 1;
   const currentGroup = Math.ceil(currentPage / pageGroupSize);
   const startPage = (currentGroup - 1) * pageGroupSize + 1;
@@ -95,7 +90,22 @@ export default function ReservationManagePage() {
   const handlePageChange = (pageNum) => {
     if (pageNum < 1 || pageNum > totalPages) return;
     setCurrentPage(pageNum);
-    window.scrollTo(0, 0); // 상단 이동
+    window.scrollTo(0, 0);
+  };
+
+  const handleStatusChange = async (id, newStatus) => {
+    const statusLabel = STATUS_MAP[newStatus]?.label;
+    if (!window.confirm(`예약 상태를 [${statusLabel}]로 변경하시겠습니까?`))
+      return;
+    try {
+      await dispatch(
+        updateReservationStatusThunk({ reservationId: id, status: newStatus })
+      ).unwrap();
+      alert("상태가 변경되었습니다.");
+      loadData();
+    } catch (err) {
+      alert(err?.message || "상태 변경에 실패했습니다.");
+    }
   };
 
   return (
@@ -153,7 +163,7 @@ export default function ReservationManagePage() {
                       {row.user?.phoneNumber || "-"}
                     </span>
                   </div>
-                  <div className="col-business" title={row.business?.name}>
+                  <div className="col-business">
                     {row.business?.name || "-"}
                   </div>
                   <div className="col-machine info-cell">
@@ -192,13 +202,21 @@ export default function ReservationManagePage() {
                     </span>
                   </div>
                   <div className="col-status">
-                    <span
-                      className={`status-badge ${
+                    <select
+                      className={`status-select ${
                         STATUS_MAP[row.status]?.className || ""
                       }`}
+                      value={row.status}
+                      onChange={(e) =>
+                        handleStatusChange(row.id, e.target.value)
+                      }
                     >
-                      {STATUS_MAP[row.status]?.label || row.status}
-                    </span>
+                      {Object.entries(STATUS_MAP).map(([key, value]) => (
+                        <option key={key} value={key}>
+                          {value.label}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                 </div>
               ))
@@ -212,7 +230,6 @@ export default function ReservationManagePage() {
           </div>
         </div>
 
-        {/* 페이지네이션 추가 */}
         <div className="pagination">
           {currentPage > pageGroupSize && (
             <button
