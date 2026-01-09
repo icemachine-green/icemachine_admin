@@ -34,7 +34,19 @@ const formatSize = (size) => {
 export default function ReservationManagePage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const urlReservationId = searchParams.get("reservationId") || "";
+  const selectedDate = searchParams.get("date") || "";
+
+  const [searchType, setSearchType] = useState(
+    urlReservationId ? "reservationId" : "total"
+  );
+  const [searchInput, setSearchInput] = useState(urlReservationId);
+  const [appliedSearch, setAppliedSearch] = useState({
+    type: urlReservationId ? "reservationId" : "total",
+    value: urlReservationId,
+  });
 
   const [currentPage, setCurrentPage] = useState(1);
   const [now, setNow] = useState(dayjs());
@@ -43,34 +55,55 @@ export default function ReservationManagePage() {
   const limit = 8;
   const pageGroupSize = 5;
 
-  const reservationId = searchParams.get("reservationId") || "";
-  const selectedDate = searchParams.get("date") || "";
-
   const {
     recentReservations: reservations,
     totalCount,
     loading,
   } = useSelector((state) => state.adminReservation);
 
+  const getPlaceholder = () => {
+    switch (searchType) {
+      case "reservationId":
+        return "예약 ID (숫자만)";
+      case "userName":
+        return "고객명 검색";
+      case "engineerName":
+        return "담당 기사명 검색";
+      case "businessName":
+        return "매장명 검색";
+      case "total":
+        return "전체보기 모드 (입력 불가)";
+      default:
+        return "검색어를 입력하세요";
+    }
+  };
+
+  const handleInputChange = (e) => {
+    let val = e.target.value;
+    if (searchType === "reservationId") val = val.replace(/[^0-9]/g, "");
+    setSearchInput(val);
+  };
+
   const loadData = useCallback(() => {
     const todayStr = dayjs().format("YYYY-MM-DD");
-    dispatch(
-      fetchRecentReservations({
-        page: currentPage,
-        limit,
-        reservationId,
-        reservedDate: selectedDate,
-        startDate: !selectedDate && !reservationId ? todayStr : null,
-        orderBy: "reservedDate",
-        sortBy: "ASC",
-      })
-    );
-    setLastUpdated(dayjs());
-  }, [dispatch, currentPage, reservationId, selectedDate]);
+    const filters = {
+      page: currentPage,
+      limit,
+      reservedDate: selectedDate,
+      orderBy: "reservedDate",
+      sortBy: "ASC",
+      startDate: !selectedDate && !appliedSearch.value ? todayStr : null,
+    };
 
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [reservationId, selectedDate]);
+    if (appliedSearch.value) {
+      const key =
+        appliedSearch.type === "total" ? "totalSearch" : appliedSearch.type;
+      filters[key] = appliedSearch.value;
+    }
+
+    dispatch(fetchRecentReservations(filters));
+    setLastUpdated(dayjs());
+  }, [dispatch, currentPage, appliedSearch, selectedDate]);
 
   useEffect(() => {
     loadData();
@@ -82,9 +115,48 @@ export default function ReservationManagePage() {
     };
   }, [loadData]);
 
+  const handleSearch = (e) => {
+    if (e) e.preventDefault();
+    if (searchType === "total") return;
+
+    const val = searchInput.trim();
+    if (!val) {
+      alert("검색어를 입력해 주세요.");
+      return;
+    }
+
+    setAppliedSearch({ type: searchType, value: val });
+    setCurrentPage(1);
+
+    const newParams = {};
+    if (selectedDate) newParams.date = selectedDate;
+    if (searchType === "reservationId" && val) newParams.reservationId = val;
+    setSearchParams(newParams);
+  };
+
+  const handleSearchTypeChange = (e) => {
+    const newType = e.target.value;
+    setSearchType(newType);
+    setSearchInput("");
+
+    if (newType === "total") {
+      setAppliedSearch({ type: "total", value: "" });
+      setCurrentPage(1);
+      setSearchParams(selectedDate ? { date: selectedDate } : {});
+    }
+  };
+
+  const handleReset = () => {
+    setSearchType("total");
+    setSearchInput("");
+    setAppliedSearch({ type: "total", value: "" });
+    setCurrentPage(1);
+    setSearchParams({});
+  };
+
   const totalPages = Math.ceil((totalCount || 0) / limit) || 1;
-  const currentGroup = Math.ceil(currentPage / pageGroupSize);
-  const startPage = (currentGroup - 1) * pageGroupSize + 1;
+  const startPage =
+    (Math.ceil(currentPage / pageGroupSize) - 1) * pageGroupSize + 1;
   const endPage = Math.min(startPage + pageGroupSize - 1, totalPages);
 
   const handlePageChange = (pageNum) => {
@@ -113,13 +185,15 @@ export default function ReservationManagePage() {
       <div className="reservation-manage-header-flex">
         <div className="title-area">
           <h1 className="reservation-manage-greeting">
-            {!selectedDate && !reservationId
-              ? "전체 예약 관리 (오늘 이후)"
-              : "예약 검색 결과"}
+            {appliedSearch.value
+              ? `"${appliedSearch.value}" 검색 결과`
+              : selectedDate
+              ? `${selectedDate} 예약 현황`
+              : "전체 예약 관리 (오늘 이후)"}
           </h1>
           <div className="manage-sync-info">
             <span className="live-dot"></span>
-            마지막 갱신: {lastUpdated.format("HH:mm:ss")} |
+            마지막 갱신: {lastUpdated.format("HH:mm:ss")} |{" "}
             <span className="current-time">
               현재 시각: {now.format("HH:mm:ss")}
             </span>
@@ -133,13 +207,59 @@ export default function ReservationManagePage() {
         </button>
       </div>
 
+      <div className="admin-search-section">
+        <form onSubmit={handleSearch} className="admin-search-form">
+          <select
+            className="admin-search-select"
+            value={searchType}
+            onChange={handleSearchTypeChange}
+          >
+            <option value="total">전체보기 (기본)</option>
+            <option value="reservationId">예약 ID</option>
+            <option value="businessName">고객 매장명</option>
+            <option value="userName">고객명</option>
+            <option value="engineerName">담당 기사명</option>
+          </select>
+
+          <div className="admin-search-input-wrapper">
+            <input
+              className={`admin-search-input ${
+                searchType === "total" ? "disabled" : ""
+              }`}
+              type="text"
+              placeholder={getPlaceholder()}
+              value={searchInput}
+              onChange={handleInputChange}
+              disabled={searchType === "total"}
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="admin-search-submit-btn"
+            disabled={searchType === "total"}
+            style={{
+              opacity: searchType === "total" ? 0.5 : 1,
+              cursor: searchType === "total" ? "not-allowed" : "pointer",
+            }}
+          >
+            검색
+          </button>
+        </form>
+
+        {(appliedSearch.value || selectedDate) && (
+          <button onClick={handleReset} className="admin-search-reset-btn">
+            필터 초기화
+          </button>
+        )}
+      </div>
+
       <section className="reservation-manage-table-wrapper">
         <div className="table-header">
           <h2>
             예약 목록 <span>(총 {totalCount || 0}건)</span>
           </h2>
         </div>
-
         <div className="reservation-manage-table">
           <div className="manage-table-row table-head">
             <div className="col-id">ID</div>
@@ -151,16 +271,15 @@ export default function ReservationManagePage() {
             <div className="col-date">예약일(시간)</div>
             <div className="col-status">상태</div>
           </div>
-
           <div className={`manage-table-body ${loading ? "is-loading" : ""}`}>
             {reservations?.length > 0 ? (
               reservations.map((row) => (
                 <div key={row.id} className="manage-table-row">
                   <div className="col-id">{row.id}</div>
                   <div className="col-user info-cell">
-                    <strong>{row.user?.name || "-"}</strong>
+                    <strong>{row.User?.name || row.user?.name || "-"}</strong>
                     <span className="sub-info">
-                      {row.user?.phoneNumber || "-"}
+                      {row.User?.phoneNumber || row.user?.phoneNumber || "-"}
                     </span>
                   </div>
                   <div className="col-business">
@@ -172,18 +291,21 @@ export default function ReservationManagePage() {
                       {formatSize(row.iceMachine?.sizeType)}
                     </span>
                   </div>
+
+                  {/* 기사 출력부: 콘솔 데이터 구조 {name, phoneNumber}에 맞춰 수정 */}
                   <div className="col-engineer info-cell">
                     {row.engineer ? (
                       <>
                         <strong>{row.engineer.name}</strong>
                         <span className="sub-info">
-                          {row.engineer.phoneNumber}
+                          {row.engineer.phoneNumber || "-"}
                         </span>
                       </>
                     ) : (
                       <span className="unassigned-text">미배정</span>
                     )}
                   </div>
+
                   <div className="col-service">
                     <span className="service-text">
                       {SERVICE_MAP[row.servicePolicy?.serviceType] || "기타"}
@@ -195,7 +317,7 @@ export default function ReservationManagePage() {
                       {row.serviceStartTime
                         ? dayjs(row.serviceStartTime).format("HH:mm")
                         : "00:00"}{" "}
-                      ~
+                      ~{" "}
                       {row.serviceEndTime
                         ? dayjs(row.serviceEndTime).format("HH:mm")
                         : "00:00"}
@@ -212,7 +334,13 @@ export default function ReservationManagePage() {
                       }
                     >
                       {Object.entries(STATUS_MAP).map(([key, value]) => (
-                        <option key={key} value={key}>
+                        <option
+                          key={key}
+                          value={key}
+                          style={{
+                            display: row.status === key ? "none" : "block",
+                          }}
+                        >
                           {value.label}
                         </option>
                       ))}
