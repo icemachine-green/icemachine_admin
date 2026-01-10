@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useRef } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
@@ -6,6 +6,7 @@ import {
   fetchRecentReservations,
   updateReservationStatusThunk,
 } from "../store/thunks/adminReservationThunk.js";
+import LiveClock from "../common/LiveClock.jsx"; // 🚩 공통 컴포넌트 임포트
 import "./ReservationManagePage.css";
 
 const STATUS_MAP = {
@@ -49,7 +50,6 @@ export default function ReservationManagePage() {
   });
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [now, setNow] = useState(dayjs());
   const [lastUpdated, setLastUpdated] = useState(dayjs());
 
   const limit = 8;
@@ -61,9 +61,6 @@ export default function ReservationManagePage() {
     loading,
   } = useSelector((state) => state.adminReservation);
 
-  /**
-   * ✅ 데이터 로딩 로직 (각 필터별 파라미터 분리)
-   */
   const loadData = useCallback(() => {
     const filters = {
       page: currentPage,
@@ -72,10 +69,8 @@ export default function ReservationManagePage() {
       sortBy: "ASC",
     };
 
-    // 🚩 검색어가 있는 경우: 선택한 카테고리에 맞는 전용 파라미터 사용
     if (appliedSearch.value) {
       const val = appliedSearch.value;
-
       switch (appliedSearch.type) {
         case "reservationId":
           filters.reservationId = val;
@@ -90,50 +85,40 @@ export default function ReservationManagePage() {
           filters.engineerName = val;
           break;
         default:
-          filters.totalSearch = val; // 통합 검색일 때만 totalSearch 사용
+          filters.totalSearch = val;
       }
-
-      filters.startDate = "2025-01-01"; // 검색 시 범위 확장
+      filters.startDate = "2025-01-01";
       filters.mode = null;
-    }
-    // 검색어는 없고 날짜를 선택한 경우
-    else if (selectedDate) {
+    } else if (selectedDate) {
       filters.reservedDate = selectedDate;
       filters.startDate = selectedDate;
       filters.mode = null;
-    }
-    // 기본 모드 (오늘 이후 리스트)
-    else {
+    } else {
       filters.startDate = dayjs().format("YYYY-MM-DD");
       filters.mode = "future";
     }
 
+    console.log("📡 [예약 관리] 목록 갱신 중...");
     dispatch(fetchRecentReservations(filters));
     setLastUpdated(dayjs());
   }, [dispatch, currentPage, appliedSearch, selectedDate, limit]);
 
+  // API 폴링 (1분 주기로 고정)
   useEffect(() => {
     loadData();
     const pollingTimer = setInterval(loadData, 60000);
-    const clockTimer = setInterval(() => setNow(dayjs()), 1000);
-    return () => {
-      clearInterval(pollingTimer);
-      clearInterval(clockTimer);
-    };
+    return () => clearInterval(pollingTimer);
   }, [loadData]);
 
   const handleSearch = (e) => {
     if (e) e.preventDefault();
     const val = searchInput.trim();
-
     if (searchType !== "total" && !val) {
       alert("검색어를 입력해 주세요.");
       return;
     }
-
     setAppliedSearch({ type: searchType, value: val });
     setCurrentPage(1);
-
     const newParams = {};
     if (selectedDate) newParams.date = selectedDate;
     if (searchType === "reservationId" && val) newParams.reservationId = val;
@@ -184,7 +169,7 @@ export default function ReservationManagePage() {
       alert(err?.message || "상태 변경에 실패했습니다.");
     }
   };
-
+  console.log("시계 분리 확인");
   return (
     <div className="reservation-manage-container">
       <div className="reservation-manage-header-flex">
@@ -200,7 +185,8 @@ export default function ReservationManagePage() {
             <span className="live-dot"></span>
             마지막 갱신: {lastUpdated.format("HH:mm:ss")} |{" "}
             <span className="current-time">
-              현재 시각: {now.format("HH:mm:ss")}
+              {" "}
+              현재 시각: <LiveClock />{" "}
             </span>
           </div>
         </div>
@@ -225,7 +211,6 @@ export default function ReservationManagePage() {
             <option value="userName">고객명</option>
             <option value="engineerName">기사명</option>
           </select>
-
           <div className="admin-search-input-wrapper">
             <input
               className="admin-search-input"
@@ -237,12 +222,10 @@ export default function ReservationManagePage() {
               onChange={(e) => setSearchInput(e.target.value)}
             />
           </div>
-
           <button type="submit" className="admin-search-submit-btn">
             검색
           </button>
         </form>
-
         {(appliedSearch.value || selectedDate) && (
           <button onClick={handleReset} className="admin-search-reset-btn">
             초기화
@@ -355,7 +338,8 @@ export default function ReservationManagePage() {
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage === 1}
           >
-            &lt;
+            {" "}
+            &lt;{" "}
           </button>
           {Array.from(
             { length: endPage - startPage + 1 },
@@ -366,7 +350,8 @@ export default function ReservationManagePage() {
               className={`page-btn ${currentPage === num ? "active" : ""}`}
               onClick={() => handlePageChange(num)}
             >
-              {num}
+              {" "}
+              {num}{" "}
             </button>
           ))}
           <button
@@ -374,7 +359,8 @@ export default function ReservationManagePage() {
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
           >
-            &gt;
+            {" "}
+            &gt;{" "}
           </button>
         </div>
       </section>

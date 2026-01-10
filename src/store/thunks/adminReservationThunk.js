@@ -26,9 +26,6 @@ export const fetchRecentReservations = createAsyncThunk(
     try {
       const response = await adminReservationApi.getReservations(params);
 
-      // 🔍 디버깅용 로그: 백엔드 검색 결과 데이터 구조 확인
-      console.log("📡 [Thunk] 서버 응답 데이터:", response.data);
-
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || "데이터 로딩 실패");

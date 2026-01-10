@@ -1,7 +1,6 @@
-import React, { useEffect, useState, useCallback, memo } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import dayjs from "dayjs";
-// 🚩 임포트 경로 수정 완료
 import {
   fetchDashboardStats,
   fetchRecentReservations,
@@ -9,6 +8,7 @@ import {
 } from "../store/thunks/adminReservationThunk.js";
 import { setDashboardFilter } from "../store/slices/adminReservationSlice.js";
 
+import LiveClock from "../common/LiveClock.jsx"; // 🚩 공통 컴포넌트 임포트
 import ReservationDetailModal from "./ReservationDetailModal.jsx";
 import "./DashboardPage.css";
 
@@ -19,15 +19,6 @@ const STATUS_MAP = {
   COMPLETED: { label: "완료됨", color: "orange" },
   CANCELED: { label: "취소", color: "red" },
 };
-
-const LiveClock = memo(() => {
-  const [now, setNow] = useState(dayjs());
-  useEffect(() => {
-    const clockTimer = setInterval(() => setNow(dayjs()), 1000);
-    return () => clearInterval(clockTimer);
-  }, []);
-  return <>{now.format("HH:mm:ss")}</>;
-});
 
 export default function DashboardPage() {
   const dispatch = useDispatch();
@@ -45,6 +36,7 @@ export default function DashboardPage() {
   const limit = 5;
   const pageGroupSize = 5;
 
+  // 데이터 로드 로직
   const loadDashboardData = useCallback(async () => {
     const todayStr = dayjs().format("YYYY-MM-DD");
 
@@ -58,6 +50,7 @@ export default function DashboardPage() {
     };
 
     try {
+      console.log("📡 [대시보드] 데이터 동기화 중...");
       await Promise.all([
         dispatch(fetchDashboardStats(commonParams)),
         dispatch(fetchRecentReservations(commonParams)),
@@ -68,6 +61,7 @@ export default function DashboardPage() {
     }
   }, [dispatch, statMode, currentPage, limit]);
 
+  // API 폴링 (1분 주기)
   useEffect(() => {
     loadDashboardData();
     const pollingTimer = setInterval(loadDashboardData, 60000);
@@ -90,7 +84,7 @@ export default function DashboardPage() {
   const handleOpenDetail = (id) => {
     dispatch(fetchReservationDetail(id));
   };
-
+  console.log("시계 분리 확인");
   return (
     <div className="dashboard-container">
       <div className="dashboard-header-flex">
@@ -218,14 +212,16 @@ export default function DashboardPage() {
             onClick={() => handlePageChange(1)}
             disabled={currentPage === 1}
           >
-            &lt;&lt;
+            {" "}
+            &lt;&lt;{" "}
           </button>
           <button
             className="page-btn arrow"
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage === 1}
           >
-            &lt;
+            {" "}
+            &lt;{" "}
           </button>
           {Array.from(
             { length: endPage - startPage + 1 },
@@ -236,7 +232,8 @@ export default function DashboardPage() {
               className={`page-btn ${currentPage === num ? "active" : ""}`}
               onClick={() => handlePageChange(num)}
             >
-              {num}
+              {" "}
+              {num}{" "}
             </button>
           ))}
           <button
@@ -244,14 +241,16 @@ export default function DashboardPage() {
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
           >
-            &gt;
+            {" "}
+            &gt;{" "}
           </button>
           <button
             className="page-btn arrow"
             onClick={() => handlePageChange(totalPages)}
             disabled={currentPage === totalPages}
           >
-            &gt;&gt;
+            {" "}
+            &gt;&gt;{" "}
           </button>
         </div>
       </section>
