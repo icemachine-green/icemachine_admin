@@ -1,0 +1,37 @@
+/* src/styles/globalVariables.css */
+:root {
+  /* 🎨 상태별 공통 색상 */
+  --color-pending: #4f6bed;
+  --color-confirmed: #9b6ef3;
+  --color-start: #3aa76d;
+  --color-completed: #e68a2e;
+  --color-canceled: #e14b4b;
+  --color-gray: #8b8b8b;
+
+  /* 📄 페이지네이션 공통 규격 */
+  --pg-btn-size: 32px;
+  --pg-btn-border: #ddd;
+  --pg-btn-active-bg: #324053;
+  --pg-btn-active-text: #fff;
+  --pg-btn-disabled-opacity: 0.4;
+}
+
+/* 🚩 모든 페이지에서 공통으로 쓸 버튼 베이스 (필요 시) */
+.common-page-btn {
+  min-width: var(--pg-btn-size);
+  height: var(--pg-btn-size);
+  border: 1px solid var(--pg-btn-border);
+  background: #fff;
+  cursor: pointer;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.common-page-btn.active {
+  background: var(--pg-btn-active-bg);
+  color: var(--pg-btn-active-text);
+  border-color: var(--pg-btn-active-bg);
+}

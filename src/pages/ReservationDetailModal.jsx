@@ -22,7 +22,7 @@ export default function ReservationDetailModal() {
   // 데이터가 없으면 렌더링하지 않음
   if (!data && !loading) return null;
 
-  // 닫기 로직: 이벤트 전파를 명확히 끊어줌
+  // 닫기 로직
   const handleClose = (e) => {
     if (e && e.stopPropagation) e.stopPropagation();
     dispatch(clearSelectedReservation());
@@ -35,7 +35,6 @@ export default function ReservationDetailModal() {
     dispatch(clearSelectedReservation());
 
     if (targetId) {
-      // 백엔드 컨트롤러에서 받는 키값인 reservationId로 전달
       navigate(`/reservation?reservationId=${targetId}`);
     } else {
       navigate(`/reservation`);
@@ -49,7 +48,7 @@ export default function ReservationDetailModal() {
     >
       <div
         className="ReservationDetailModal-content"
-        onClick={(e) => e.stopPropagation()} // 내부 클릭 시 닫힘 방지
+        onClick={(e) => e.stopPropagation()}
       >
         <header className="ReservationDetailModal-header">
           <div className="ReservationDetailModal-header-left">
@@ -59,7 +58,6 @@ export default function ReservationDetailModal() {
             </span>
             {data && (
               <span
-                // [버그 수정 포인트] .label 대신 .color를 클래스로 사용
                 className={`status-badge ${
                   STATUS_MAP[data.status]?.color || ""
                 }`}
@@ -94,8 +92,9 @@ export default function ReservationDetailModal() {
                 <div className="ReservationDetailModal-group">
                   <label>서비스 시간</label>
                   <p className="ReservationDetailModal-text-base">
-                    {data.serviceStartTime?.split(" ")[1].substring(0, 5)} ~{" "}
-                    {data.serviceEndTime?.split(" ")[1].substring(0, 5)}
+                    {/* 백엔드 DTO 구조 반영 */}
+                    {data.serviceStartTime?.substring(11, 16)} ~{" "}
+                    {data.serviceEndTime?.substring(11, 16)}
                   </p>
                 </div>
               </div>
@@ -106,20 +105,19 @@ export default function ReservationDetailModal() {
                 <div className="ReservationDetailModal-group">
                   <label>고객 정보</label>
                   <p className="ReservationDetailModal-text-bold">
-                    {data.User?.name}
+                    {data.user?.name}
                   </p>
                   <p className="ReservationDetailModal-text-base">
-                    {data.User?.phoneNumber}
+                    {data.user?.phoneNumber}
                   </p>
                 </div>
                 <div className="ReservationDetailModal-group">
                   <label>업체 및 주소</label>
                   <p className="ReservationDetailModal-text-bold">
-                    {data.Business?.name}
+                    {data.business?.name}
                   </p>
                   <p className="ReservationDetailModal-address-text">
-                    {data.Business?.mainAddress}{" "}
-                    {data.Business?.detailedAddress}
+                    {data.business?.address}
                   </p>
                 </div>
               </div>
@@ -130,19 +128,17 @@ export default function ReservationDetailModal() {
                 <div className="ReservationDetailModal-group">
                   <label>서비스 유형</label>
                   <p className="ReservationDetailModal-text-base">
-                    {data.ServicePolicy?.description}
-                  </p>
-                  <p className="ReservationDetailModal-text-sub">
-                    {data.ServicePolicy?.standardDuration}분 소요 예정
+                    {data.servicePolicy?.serviceType}
                   </p>
                 </div>
                 <div className="ReservationDetailModal-group">
                   <label>제빙기 모델</label>
                   <p className="ReservationDetailModal-text-base">
-                    {data.IceMachine?.modelName}
+                    {/* brandName + modelName 조합으로 표시 */}
+                    {data.iceMachine?.brandName} {data.iceMachine?.modelName}
                   </p>
                   <p className="ReservationDetailModal-text-sub">
-                    {data.IceMachine?.sizeType}
+                    {data.iceMachine?.sizeType}
                   </p>
                 </div>
               </div>
@@ -151,18 +147,15 @@ export default function ReservationDetailModal() {
                 <label className="ReservationDetailModal-engineer-label">
                   담당 엔지니어
                 </label>
-                {data.Engineer ? (
+                {data.engineer ? (
                   <div className="ReservationDetailModal-engineer-info">
                     <div className="ReservationDetailModal-engineer-main">
                       <span className="ReservationDetailModal-engineer-name">
-                        {data.Engineer.User?.name} 기사
-                      </span>
-                      <span className="ReservationDetailModal-engineer-level">
-                        ({data.Engineer.skillLevel})
+                        {data.engineer.name} 기사
                       </span>
                     </div>
                     <p className="ReservationDetailModal-engineer-phone">
-                      {data.Engineer.User?.phoneNumber}
+                      {data.engineer.phoneNumber}
                     </p>
                   </div>
                 ) : (

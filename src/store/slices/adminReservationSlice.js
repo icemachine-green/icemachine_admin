@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import {
   fetchDashboardStats,
   fetchRecentReservations,
-  fetchReservationDetail, // Thunk 추가
+  fetchReservationDetail,
 } from "../thunks/adminReservationThunk";
 
 const adminReservationSlice = createSlice({
@@ -17,54 +17,68 @@ const adminReservationSlice = createSlice({
       TOTAL: 0,
     },
     recentReservations: [],
-    selectedReservation: null, // [추가] 상세 보기 데이터 저장용
+    selectedReservation: null,
     totalCount: 0,
     loading: false,
     error: null,
+    // 🚩 [추가됨] 페이지 이동 시에도 상태를 유지하기 위한 변수
+    statMode: "today",
+    currentPage: 1,
   },
   reducers: {
-    // [추가] 모달을 닫을 때 상세 데이터를 비워주는 액션
     clearSelectedReservation: (state) => {
       state.selectedReservation = null;
+      state.error = null;
+    },
+    // 🚩 [추가됨] DashboardPage에서 버튼 클릭 시 호출할 액션
+    setDashboardFilter: (state, action) => {
+      const { mode, page } = action.payload;
+      if (mode !== undefined) state.statMode = mode;
+      if (page !== undefined) state.currentPage = page;
     },
   },
   extraReducers: (builder) => {
     builder
-      // 기존 통계 로직
+      // 1. 대시보드 통계
       .addCase(fetchDashboardStats.fulfilled, (state, action) => {
         state.loading = false;
         state.stats = action.payload.data || state.stats;
       })
-      // 기존 리스트 로직
+      // 2. 예약 목록
       .addCase(fetchRecentReservations.pending, (state) => {
         state.loading = true;
+        state.error = null;
       })
       .addCase(fetchRecentReservations.fulfilled, (state, action) => {
         state.loading = false;
-        state.recentReservations = action.payload?.items || [];
-        state.totalCount = action.payload?.pagination?.totalItems || 0;
+        const result = action.payload.data;
+        console.log("💾 [Slice] 서버 응답 데이터:", result);
+        state.recentReservations = result?.items || [];
+        state.totalCount = result?.pagination?.totalItems || 0;
+        console.log("📊 [Slice] 매핑 결과 - totalCount:", state.totalCount);
       })
       .addCase(fetchRecentReservations.rejected, (state, action) => {
         state.loading = false;
-        state.recentReservations = [];
-        state.totalCount = 0;
         state.error = action.payload;
       })
-
-      // [추가] 상세 정보 로직 (기존 로직에 영향 없음)
+      // 3. 상세 정보
       .addCase(fetchReservationDetail.pending, (state) => {
         state.loading = true;
+        state.error = null;
       })
       .addCase(fetchReservationDetail.fulfilled, (state, action) => {
         state.loading = false;
-        state.selectedReservation = action.payload; // 단일 데이터 객체 저장
+        state.selectedReservation = action.payload.data;
       })
       .addCase(fetchReservationDetail.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+        state.selectedReservation = null;
       });
   },
 });
 
-export const { clearSelectedReservation } = adminReservationSlice.actions;
+// 🚩 setDashboardFilter가 반드시 여기에 포함되어야 에러가 안 납니다!
+export const { clearSelectedReservation, setDashboardFilter } =
+  adminReservationSlice.actions;
 export default adminReservationSlice.reducer;

@@ -111,6 +111,7 @@
   font-weight: 700;
 }
 
+/* 텍스트 색상 */
 .blue {
   color: #4f6bed;
 }
@@ -143,19 +144,6 @@
   margin-bottom: 8px;
 }
 
-.table-header h2 {
-  font-size: 18px;
-  font-weight: 700;
-}
-.table-header h2 span {
-  font-size: 14px;
-  color: #8b8b8b;
-}
-.table-header span {
-  font-size: 18px;
-  color: #555;
-}
-
 .dashboard-table {
   display: flex;
   flex-direction: column;
@@ -172,28 +160,10 @@
   text-align: center;
 }
 
-.table-row:last-child {
-  border-bottom: none;
-}
 .table-head {
   font-weight: 700;
   color: #777;
   border-bottom: 2px solid #d9d9d9;
-}
-
-.detail-btn {
-  background-color: #f5f6f8;
-  border: 1px solid #ddd;
-  padding: 4px 10px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 12px;
-  color: #555;
-}
-
-.detail-btn:hover {
-  background-color: #324053;
-  color: #fff;
 }
 
 .status-badge {
@@ -202,24 +172,27 @@
   border-radius: 14px;
   font-size: 12px;
   font-weight: 600;
-  text-align: center;
   color: #fff;
 }
 
-.status-badge.작업중 {
-  background-color: #3aa76d;
-}
-.status-badge.취소 {
-  background-color: #e14b4b;
-}
-.status-badge.접수됨 {
+/* 🚩 뱃지 배경색 클래스 (영문 클래스명과 매칭) */
+.status-badge.blue {
   background-color: #4f6bed;
 }
-.status-badge.확정됨 {
+.status-badge.purple {
   background-color: #9b6ef3;
 }
-.status-badge.완료됨 {
+.status-badge.green {
+  background-color: #3aa76d;
+}
+.status-badge.orange {
   background-color: #e68a2e;
+}
+.status-badge.red {
+  background-color: #e14b4b;
+}
+.status-badge.gray {
+  background-color: #8b8b8b;
 }
 
 .unassigned {
@@ -227,16 +200,30 @@
   font-weight: 600;
 }
 
-.is-loading {
-  opacity: 0.6;
-  pointer-events: none;
-}
-
+/* 🚩 페이지네이션 스타일 */
 .pagination {
-  margin-top: auto;
-  padding-top: 20px;
+  margin-top: 20px;
   display: flex;
   justify-content: center;
-  align-items: center;
-  gap: 6px;
+  gap: 8px;
+}
+
+.page-btn {
+  min-width: 32px;
+  height: 32px;
+  border: 1px solid #ddd;
+  background: #fff;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.page-btn.active {
+  background: #324053;
+  color: #fff;
+  border-color: #324053;
+}
+
+.page-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
