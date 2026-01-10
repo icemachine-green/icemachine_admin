@@ -1,6 +1,9 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { adminReservationApi } from "../../api/adminReservationApi";
 
+/**
+ * 1. 대시보드 통계 조회
+ */
 export const fetchDashboardStats = createAsyncThunk(
   "adminReservation/fetchStats",
   async (params, { rejectWithValue }) => {
@@ -13,24 +16,29 @@ export const fetchDashboardStats = createAsyncThunk(
   }
 );
 
+/**
+ * 2. 예약 목록 조회 (검색 및 필터링 포함)
+ * - params에 totalSearch(고객/매장/기사명) 또는 reservationId가 포함되어 전달됩니다.
+ */
 export const fetchRecentReservations = createAsyncThunk(
   "adminReservation/fetchRecent",
   async (params, { rejectWithValue }) => {
     try {
-      console.log("🚀 [Thunk 요청 파라미터]:", params);
       const response = await adminReservationApi.getReservations(params);
 
-      // 🔍 여기서 서버가 주는 원본 데이터를 반드시 확인해야 합니다.
-      console.log("📦 [Thunk 서버 응답 원본]:", response.data);
+      // 🔍 디버깅용 로그: 백엔드 검색 결과 데이터 구조 확인
+      console.log("📡 [Thunk] 서버 응답 데이터:", response.data);
 
       return response.data;
     } catch (error) {
-      console.error("❌ [Thunk 에러]:", error);
       return rejectWithValue(error.response?.data || "데이터 로딩 실패");
     }
   }
 );
 
+/**
+ * 3. 예약 상세 정보 조회
+ */
 export const fetchReservationDetail = createAsyncThunk(
   "adminReservation/fetchDetail",
   async (id, { rejectWithValue }) => {
@@ -43,6 +51,10 @@ export const fetchReservationDetail = createAsyncThunk(
   }
 );
 
+/**
+ * 4. 예약 상태 변경
+ * - 상태 변경 성공 후 리스트를 새로고침하는 로직은 컴포넌트(Page) 레이어에서 처리합니다.
+ */
 export const updateReservationStatusThunk = createAsyncThunk(
   "adminReservation/updateStatus",
   async ({ reservationId, status }, { rejectWithValue }) => {
@@ -51,9 +63,17 @@ export const updateReservationStatusThunk = createAsyncThunk(
         reservationId,
         status
       );
-      return { reservationId, status, message: response.data.message };
+
+      // 상태 변경 성공 시 변경된 정보와 서버 메시지 반환
+      return {
+        reservationId,
+        status,
+        message: response.data?.message || "상태가 성공적으로 변경되었습니다.",
+      };
     } catch (error) {
-      return rejectWithValue(error.response?.data || "상태 변경 실패");
+      // 401 권한 에러 등 예외 처리
+      const errorMessage = error.response?.data?.message || "상태 변경 실패";
+      return rejectWithValue(errorMessage);
     }
   }
 );

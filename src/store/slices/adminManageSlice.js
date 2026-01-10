@@ -52,10 +52,9 @@ const adminReservationSlice = createSlice({
       .addCase(fetchRecentReservations.fulfilled, (state, action) => {
         state.loading = false;
         const result = action.payload.data;
-        console.log("💾 [Slice] 서버 응답 데이터:", result);
+
         state.recentReservations = result?.items || [];
         state.totalCount = result?.pagination?.totalItems || 0;
-        console.log("📊 [Slice] 매핑 결과 - totalCount:", state.totalCount);
       })
       .addCase(fetchRecentReservations.rejected, (state, action) => {
         state.loading = false;

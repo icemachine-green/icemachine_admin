@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
@@ -61,49 +61,56 @@ export default function ReservationManagePage() {
     loading,
   } = useSelector((state) => state.adminReservation);
 
-  const getPlaceholder = () => {
-    switch (searchType) {
-      case "reservationId":
-        return "예약 ID (숫자만)";
-      case "userName":
-        return "고객명 검색";
-      case "engineerName":
-        return "담당 기사명 검색";
-      case "businessName":
-        return "매장명 검색";
-      case "total":
-        return "전체보기 모드 (입력 불가)";
-      default:
-        return "검색어를 입력하세요";
-    }
-  };
-
-  const handleInputChange = (e) => {
-    let val = e.target.value;
-    if (searchType === "reservationId") val = val.replace(/[^0-9]/g, "");
-    setSearchInput(val);
-  };
-
+  /**
+   * ✅ 데이터 로딩 로직 (각 필터별 파라미터 분리)
+   */
   const loadData = useCallback(() => {
-    const todayStr = dayjs().format("YYYY-MM-DD");
     const filters = {
       page: currentPage,
       limit,
-      reservedDate: selectedDate,
       orderBy: "reservedDate",
       sortBy: "ASC",
-      startDate: !selectedDate && !appliedSearch.value ? todayStr : null,
     };
 
+    // 🚩 검색어가 있는 경우: 선택한 카테고리에 맞는 전용 파라미터 사용
     if (appliedSearch.value) {
-      const key =
-        appliedSearch.type === "total" ? "totalSearch" : appliedSearch.type;
-      filters[key] = appliedSearch.value;
+      const val = appliedSearch.value;
+
+      switch (appliedSearch.type) {
+        case "reservationId":
+          filters.reservationId = val;
+          break;
+        case "userName":
+          filters.userName = val;
+          break;
+        case "businessName":
+          filters.businessName = val;
+          break;
+        case "engineerName":
+          filters.engineerName = val;
+          break;
+        default:
+          filters.totalSearch = val; // 통합 검색일 때만 totalSearch 사용
+      }
+
+      filters.startDate = "2025-01-01"; // 검색 시 범위 확장
+      filters.mode = null;
+    }
+    // 검색어는 없고 날짜를 선택한 경우
+    else if (selectedDate) {
+      filters.reservedDate = selectedDate;
+      filters.startDate = selectedDate;
+      filters.mode = null;
+    }
+    // 기본 모드 (오늘 이후 리스트)
+    else {
+      filters.startDate = dayjs().format("YYYY-MM-DD");
+      filters.mode = "future";
     }
 
     dispatch(fetchRecentReservations(filters));
     setLastUpdated(dayjs());
-  }, [dispatch, currentPage, appliedSearch, selectedDate]);
+  }, [dispatch, currentPage, appliedSearch, selectedDate, limit]);
 
   useEffect(() => {
     loadData();
@@ -117,10 +124,9 @@ export default function ReservationManagePage() {
 
   const handleSearch = (e) => {
     if (e) e.preventDefault();
-    if (searchType === "total") return;
-
     const val = searchInput.trim();
-    if (!val) {
+
+    if (searchType !== "total" && !val) {
       alert("검색어를 입력해 주세요.");
       return;
     }
@@ -137,9 +143,8 @@ export default function ReservationManagePage() {
   const handleSearchTypeChange = (e) => {
     const newType = e.target.value;
     setSearchType(newType);
-    setSearchInput("");
-
     if (newType === "total") {
+      setSearchInput("");
       setAppliedSearch({ type: "total", value: "" });
       setCurrentPage(1);
       setSearchParams(selectedDate ? { date: selectedDate } : {});
@@ -214,42 +219,33 @@ export default function ReservationManagePage() {
             value={searchType}
             onChange={handleSearchTypeChange}
           >
-            <option value="total">전체보기 (기본)</option>
+            <option value="total">전체검색 (통합)</option>
             <option value="reservationId">예약 ID</option>
-            <option value="businessName">고객 매장명</option>
+            <option value="businessName">매장명</option>
             <option value="userName">고객명</option>
-            <option value="engineerName">담당 기사명</option>
+            <option value="engineerName">기사명</option>
           </select>
 
           <div className="admin-search-input-wrapper">
             <input
-              className={`admin-search-input ${
-                searchType === "total" ? "disabled" : ""
-              }`}
+              className="admin-search-input"
               type="text"
-              placeholder={getPlaceholder()}
+              placeholder={
+                searchType === "total" ? "매장명/고객명/기사명" : "검색어 입력"
+              }
               value={searchInput}
-              onChange={handleInputChange}
-              disabled={searchType === "total"}
+              onChange={(e) => setSearchInput(e.target.value)}
             />
           </div>
 
-          <button
-            type="submit"
-            className="admin-search-submit-btn"
-            disabled={searchType === "total"}
-            style={{
-              opacity: searchType === "total" ? 0.5 : 1,
-              cursor: searchType === "total" ? "not-allowed" : "pointer",
-            }}
-          >
+          <button type="submit" className="admin-search-submit-btn">
             검색
           </button>
         </form>
 
         {(appliedSearch.value || selectedDate) && (
           <button onClick={handleReset} className="admin-search-reset-btn">
-            필터 초기화
+            초기화
           </button>
         )}
       </div>
@@ -265,10 +261,10 @@ export default function ReservationManagePage() {
             <div className="col-id">ID</div>
             <div className="col-user">고객 정보</div>
             <div className="col-business">매장명</div>
-            <div className="col-machine">제빙기 모델/사이즈</div>
+            <div className="col-machine">브랜드 / 모델명</div>
             <div className="col-engineer">담당 기사</div>
             <div className="col-service">서비스</div>
-            <div className="col-date">예약일(시간)</div>
+            <div className="col-date">예약일</div>
             <div className="col-status">상태</div>
           </div>
           <div className={`manage-table-body ${loading ? "is-loading" : ""}`}>
@@ -286,26 +282,31 @@ export default function ReservationManagePage() {
                     {row.business?.name || "-"}
                   </div>
                   <div className="col-machine info-cell">
-                    <strong>{row.iceMachine?.modelName || "-"}</strong>
+                    <strong>
+                      {row.iceMachine
+                        ? `${row.iceMachine.brandName} / ${row.iceMachine.modelName}`
+                        : "-"}
+                    </strong>
                     <span className="sub-info">
                       {formatSize(row.iceMachine?.sizeType)}
                     </span>
                   </div>
-
-                  {/* 기사 출력부: 콘솔 데이터 구조 {name, phoneNumber}에 맞춰 수정 */}
                   <div className="col-engineer info-cell">
                     {row.engineer ? (
                       <>
-                        <strong>{row.engineer.name}</strong>
+                        <strong>
+                          {row.engineer.User?.name || row.engineer.name}
+                        </strong>
                         <span className="sub-info">
-                          {row.engineer.phoneNumber || "-"}
+                          {row.engineer.User?.phoneNumber ||
+                            row.engineer.phoneNumber ||
+                            "-"}
                         </span>
                       </>
                     ) : (
                       <span className="unassigned-text">미배정</span>
                     )}
                   </div>
-
                   <div className="col-service">
                     <span className="service-text">
                       {SERVICE_MAP[row.servicePolicy?.serviceType] || "기타"}
@@ -317,7 +318,7 @@ export default function ReservationManagePage() {
                       {row.serviceStartTime
                         ? dayjs(row.serviceStartTime).format("HH:mm")
                         : "00:00"}{" "}
-                      ~{" "}
+                      ~
                       {row.serviceEndTime
                         ? dayjs(row.serviceEndTime).format("HH:mm")
                         : "00:00"}
@@ -334,13 +335,7 @@ export default function ReservationManagePage() {
                       }
                     >
                       {Object.entries(STATUS_MAP).map(([key, value]) => (
-                        <option
-                          key={key}
-                          value={key}
-                          style={{
-                            display: row.status === key ? "none" : "block",
-                          }}
-                        >
+                        <option key={key} value={key}>
                           {value.label}
                         </option>
                       ))}
@@ -349,24 +344,12 @@ export default function ReservationManagePage() {
                 </div>
               ))
             ) : (
-              <div className="no-data-msg">
-                {loading
-                  ? "데이터 로딩 중..."
-                  : "조건에 맞는 예약 내역이 없습니다."}
-              </div>
+              <div className="no-data-msg">내역이 없습니다.</div>
             )}
           </div>
         </div>
 
         <div className="pagination">
-          {currentPage > pageGroupSize && (
-            <button
-              className="page-btn double-arrow"
-              onClick={() => handlePageChange(1)}
-            >
-              &lt;&lt;
-            </button>
-          )}
           <button
             className="page-btn arrow"
             onClick={() => handlePageChange(currentPage - 1)}
@@ -393,14 +376,6 @@ export default function ReservationManagePage() {
           >
             &gt;
           </button>
-          {endPage < totalPages && (
-            <button
-              className="page-btn double-arrow"
-              onClick={() => handlePageChange(totalPages)}
-            >
-              &gt;&gt;
-            </button>
-          )}
         </div>
       </section>
     </div>
