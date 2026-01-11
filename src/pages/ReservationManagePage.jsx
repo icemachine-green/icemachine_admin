@@ -46,6 +46,9 @@ export default function ReservationManagePage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [lastUpdated, setLastUpdated] = useState(dayjs());
 
+  // ✅ 강조 효과를 위한 상태값 추가
+  const [updatedId, setUpdatedId] = useState(null);
+
   const [reassignModal, setReassignModal] = useState({
     open: false,
     target: null,
@@ -104,6 +107,16 @@ export default function ReservationManagePage() {
     const pollingTimer = setInterval(loadData, 60000);
     return () => clearInterval(pollingTimer);
   }, [loadData]);
+
+  // ✅ 재배정 성공 시 호출될 핸들러
+  const handleReassignSuccess = (id) => {
+    setUpdatedId(id);
+    loadData(); // 데이터 갱신
+    // 3초 후 강조 효과 제거
+    setTimeout(() => {
+      setUpdatedId(null);
+    }, 3000);
+  };
 
   const handleSearch = (e) => {
     if (e) e.preventDefault();
@@ -244,7 +257,15 @@ export default function ReservationManagePage() {
           <div className={`manage-table-body ${loading ? "is-loading" : ""}`}>
             {reservations?.length > 0
               ? reservations.map((row) => (
-                  <div key={row.id} className="manage-table-row">
+                  /* ✅ updatedId와 일치할 경우 하이라이트 클래스 추가 */
+                  <div
+                    key={row.id}
+                    className={`manage-table-row ${
+                      row.id === updatedId
+                        ? "ReservationManagePage-row-highlight"
+                        : ""
+                    }`}
+                  >
                     <div className="col-id">{row.id}</div>
                     <div className="col-user info-cell">
                       <strong>{row.User?.name || row.user?.name || "-"}</strong>
@@ -284,7 +305,6 @@ export default function ReservationManagePage() {
                           </span>
                         </>
                       ) : (
-                        /* 🚩 기존 UI와 동일한 구조로 맵핑 */
                         <>
                           <strong>
                             -
@@ -379,7 +399,7 @@ export default function ReservationManagePage() {
           isOpen={reassignModal.open}
           onClose={() => setReassignModal({ open: false, target: null })}
           reservationData={reassignModal.target}
-          onSuccess={loadData}
+          onSuccess={handleReassignSuccess}
         />
       )}
     </div>

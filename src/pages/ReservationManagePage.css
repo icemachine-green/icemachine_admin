@@ -310,3 +310,26 @@
   cursor: pointer;
   text-decoration: underline;
 }
+
+/* ✅ 재배정 성공 시 행 강조 애니메이션 */
+.ReservationManagePage-row-highlight {
+  animation: ReservationManagePage-pulse 3s ease-out;
+  position: relative;
+  z-index: 10;
+}
+
+@keyframes ReservationManagePage-pulse {
+  0% {
+    background-color: transparent;
+  }
+  10% {
+    background-color: rgba(79, 107, 237, 0.15); /* 부드러운 푸른색 계열 강조 */
+    box-shadow: inset 4px 0 0 #4f6bed; /* 왼쪽 라인 강조 */
+  }
+  80% {
+    background-color: rgba(79, 107, 237, 0.05);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
