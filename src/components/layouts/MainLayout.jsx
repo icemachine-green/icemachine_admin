@@ -33,7 +33,6 @@ export default function MainLayout() {
   // 2. 지연 건수: 리덕스에서 가져온 배열의 길이를 그대로 사용
   // 슬라이스 내부에서 이미 'START + 시간 경과' 로직으로 필터링되어 있습니다.
   const delayCount = delayedItems?.length || 0;
-  console.log("실시간 지연 건수 확인:", delayCount);
   const TITLE_MAP = {
     "/": "대시보드",
     "/service": "서비스 정책",

@@ -25,6 +25,8 @@ export const fetchRecentReservations = createAsyncThunk(
   async (params, { rejectWithValue }) => {
     try {
       const response = await adminReservationApi.getReservations(params);
+      // 🔥 여기입니다! 이 한 줄만 추가하고 저장하세요.
+      console.log("검사결과(fetchRecentReservations):", response.data);
 
       return response.data;
     } catch (error) {
@@ -41,6 +43,8 @@ export const fetchReservationDetail = createAsyncThunk(
   async (id, { rejectWithValue }) => {
     try {
       const response = await adminReservationApi.getReservationDetail(id);
+      // 🔥 여기입니다! 이 한 줄만 추가하고 저장하세요.
+      console.log("검사결과(fetchReservationDetail):", response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || "상세 정보 로딩 실패");

@@ -84,7 +84,7 @@ export default function DashboardPage() {
   const handleOpenDetail = (id) => {
     dispatch(fetchReservationDetail(id));
   };
-  console.log("시계 분리 확인");
+
   return (
     <div className="dashboard-container">
       <div className="dashboard-header-flex">

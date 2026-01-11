@@ -19,8 +19,6 @@ export default function DelayAlertManager() {
   };
 
   useEffect(() => {
-    console.log("🧐 현재 지연 건수 체크:", count);
-
     if (count > 0) {
       const message =
         "지연 작업이 감지되었습니다. 지연 작업 관리를 확인해 주세요.";
