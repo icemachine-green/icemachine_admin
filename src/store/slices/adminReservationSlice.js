@@ -17,11 +17,11 @@ const adminReservationSlice = createSlice({
       TOTAL: 0,
     },
     recentReservations: [],
+    delayedReservations: [], // 🚩 지연 의심 레코드 전용 바구니
     selectedReservation: null,
     totalCount: 0,
     loading: false,
     error: null,
-    // 🚩 [추가됨] 페이지 이동 시에도 상태를 유지하기 위한 변수
     statMode: "today",
     currentPage: 1,
   },
@@ -30,7 +30,6 @@ const adminReservationSlice = createSlice({
       state.selectedReservation = null;
       state.error = null;
     },
-    // 🚩 [추가됨] DashboardPage에서 버튼 클릭 시 호출할 액션
     setDashboardFilter: (state, action) => {
       const { mode, page } = action.payload;
       if (mode !== undefined) state.statMode = mode;
@@ -44,7 +43,7 @@ const adminReservationSlice = createSlice({
         state.loading = false;
         state.stats = action.payload.data || state.stats;
       })
-      // 2. 예약 목록
+      // 2. 예약 목록 조회 시 지연 레코드 자동 추출
       .addCase(fetchRecentReservations.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -52,31 +51,29 @@ const adminReservationSlice = createSlice({
       .addCase(fetchRecentReservations.fulfilled, (state, action) => {
         state.loading = false;
         const result = action.payload.data;
-        state.recentReservations = result?.items || [];
+        const items = result?.items || [];
+
+        state.recentReservations = items;
         state.totalCount = result?.pagination?.totalItems || 0;
+
+        // 🚩 [핵심 로직] START 상태인데 종료시간이 지난 것들을 지연 바구니에 담기
+        const now = new Date();
+        state.delayedReservations = items.filter((res) => {
+          return res.status === "START" && new Date(res.serviceEndTime) < now;
+        });
       })
       .addCase(fetchRecentReservations.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
       // 3. 상세 정보
-      .addCase(fetchReservationDetail.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
       .addCase(fetchReservationDetail.fulfilled, (state, action) => {
         state.loading = false;
         state.selectedReservation = action.payload.data;
-      })
-      .addCase(fetchReservationDetail.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-        state.selectedReservation = null;
       });
   },
 });
 
-// 🚩 setDashboardFilter가 반드시 여기에 포함되어야 에러가 안 납니다!
 export const { clearSelectedReservation, setDashboardFilter } =
   adminReservationSlice.actions;
 export default adminReservationSlice.reducer;

@@ -6,7 +6,7 @@ import {
   fetchRecentReservations,
   updateReservationStatusThunk,
 } from "../store/thunks/adminReservationThunk.js";
-import LiveClock from "../common/LiveClock.jsx"; // 🚩 공통 컴포넌트 임포트
+import LiveClock from "../common/LiveClock.jsx";
 import "./ReservationManagePage.css";
 
 const STATUS_MAP = {
@@ -15,13 +15,6 @@ const STATUS_MAP = {
   START: { label: "작업 중", className: "status-start" },
   COMPLETED: { label: "완료", className: "status-completed" },
   CANCELED: { label: "취소", className: "status-canceled" },
-};
-
-const SERVICE_MAP = {
-  VISIT_CHECK: "방문",
-  STANDARD_CLEAN: "스탠다드",
-  DEEP_CLEAN: "딥클린",
-  PREMIUM_CLEAN: "프리미엄",
 };
 
 const formatSize = (size) => {
@@ -98,12 +91,10 @@ export default function ReservationManagePage() {
       filters.mode = "future";
     }
 
-    console.log("📡 [예약 관리] 목록 갱신 중...");
     dispatch(fetchRecentReservations(filters));
     setLastUpdated(dayjs());
   }, [dispatch, currentPage, appliedSearch, selectedDate, limit]);
 
-  // API 폴링 (1분 주기로 고정)
   useEffect(() => {
     loadData();
     const pollingTimer = setInterval(loadData, 60000);
@@ -152,7 +143,6 @@ export default function ReservationManagePage() {
   const handlePageChange = (pageNum) => {
     if (pageNum < 1 || pageNum > totalPages) return;
     setCurrentPage(pageNum);
-    window.scrollTo(0, 0);
   };
 
   const handleStatusChange = async (id, newStatus) => {
@@ -169,7 +159,7 @@ export default function ReservationManagePage() {
       alert(err?.message || "상태 변경에 실패했습니다.");
     }
   };
-  console.log("시계 분리 확인");
+
   return (
     <div className="reservation-manage-container">
       <div className="reservation-manage-header-flex">
@@ -185,7 +175,6 @@ export default function ReservationManagePage() {
             <span className="live-dot"></span>
             마지막 갱신: {lastUpdated.format("HH:mm:ss")} |{" "}
             <span className="current-time">
-              {" "}
               현재 시각: <LiveClock />{" "}
             </span>
           </div>
@@ -251,84 +240,83 @@ export default function ReservationManagePage() {
             <div className="col-status">상태</div>
           </div>
           <div className={`manage-table-body ${loading ? "is-loading" : ""}`}>
-            {reservations?.length > 0 ? (
-              reservations.map((row) => (
-                <div key={row.id} className="manage-table-row">
-                  <div className="col-id">{row.id}</div>
-                  <div className="col-user info-cell">
-                    <strong>{row.User?.name || row.user?.name || "-"}</strong>
-                    <span className="sub-info">
-                      {row.User?.phoneNumber || row.user?.phoneNumber || "-"}
-                    </span>
+            {reservations?.length > 0
+              ? reservations.map((row) => (
+                  <div key={row.id} className="manage-table-row">
+                    <div className="col-id">{row.id}</div>
+                    <div className="col-user info-cell">
+                      <strong>{row.User?.name || row.user?.name || "-"}</strong>
+                      <span className="sub-info">
+                        {row.User?.phoneNumber || row.user?.phoneNumber || "-"}
+                      </span>
+                    </div>
+                    <div className="col-business">
+                      {row.business?.name || "-"}
+                    </div>
+                    <div className="col-machine info-cell">
+                      <strong>
+                        {row.iceMachine
+                          ? `${row.iceMachine.brandName} / ${row.iceMachine.modelName}`
+                          : "-"}
+                      </strong>
+                      <span className="sub-info">
+                        {formatSize(row.iceMachine?.sizeType)}
+                      </span>
+                    </div>
+                    <div className="col-engineer info-cell">
+                      {row.engineer ? (
+                        <>
+                          <strong>
+                            {row.engineer.User?.name || row.engineer.name}
+                          </strong>
+                          <span className="sub-info">
+                            {row.engineer.User?.phoneNumber ||
+                              row.engineer.phoneNumber ||
+                              "-"}
+                          </span>
+                        </>
+                      ) : (
+                        <span className="unassigned-text">미배정</span>
+                      )}
+                    </div>
+                    <div className="col-service">
+                      <span className="service-text">
+                        {/* 서버에서 오는 한글 데이터('프리미엄' 등)를 그대로 출력 */}
+                        {row.servicePolicy?.serviceType || "-"}
+                      </span>
+                    </div>
+                    <div className="col-date info-cell">
+                      <strong>{row.reservedDate}</strong>
+                      <span className="sub-info">
+                        {row.serviceStartTime
+                          ? dayjs(row.serviceStartTime).format("HH:mm")
+                          : "00:00"}{" "}
+                        ~
+                        {row.serviceEndTime
+                          ? dayjs(row.serviceEndTime).format("HH:mm")
+                          : "00:00"}
+                      </span>
+                    </div>
+                    <div className="col-status">
+                      <select
+                        className={`status-select ${
+                          STATUS_MAP[row.status]?.className || ""
+                        }`}
+                        value={row.status}
+                        onChange={(e) =>
+                          handleStatusChange(row.id, e.target.value)
+                        }
+                      >
+                        {Object.entries(STATUS_MAP).map(([key, value]) => (
+                          <option key={key} value={key}>
+                            {value.label}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
                   </div>
-                  <div className="col-business">
-                    {row.business?.name || "-"}
-                  </div>
-                  <div className="col-machine info-cell">
-                    <strong>
-                      {row.iceMachine
-                        ? `${row.iceMachine.brandName} / ${row.iceMachine.modelName}`
-                        : "-"}
-                    </strong>
-                    <span className="sub-info">
-                      {formatSize(row.iceMachine?.sizeType)}
-                    </span>
-                  </div>
-                  <div className="col-engineer info-cell">
-                    {row.engineer ? (
-                      <>
-                        <strong>
-                          {row.engineer.User?.name || row.engineer.name}
-                        </strong>
-                        <span className="sub-info">
-                          {row.engineer.User?.phoneNumber ||
-                            row.engineer.phoneNumber ||
-                            "-"}
-                        </span>
-                      </>
-                    ) : (
-                      <span className="unassigned-text">미배정</span>
-                    )}
-                  </div>
-                  <div className="col-service">
-                    <span className="service-text">
-                      {SERVICE_MAP[row.servicePolicy?.serviceType] || "기타"}
-                    </span>
-                  </div>
-                  <div className="col-date info-cell">
-                    <strong>{row.reservedDate}</strong>
-                    <span className="sub-info">
-                      {row.serviceStartTime
-                        ? dayjs(row.serviceStartTime).format("HH:mm")
-                        : "00:00"}{" "}
-                      ~
-                      {row.serviceEndTime
-                        ? dayjs(row.serviceEndTime).format("HH:mm")
-                        : "00:00"}
-                    </span>
-                  </div>
-                  <div className="col-status">
-                    <select
-                      className={`status-select ${
-                        STATUS_MAP[row.status]?.className || ""
-                      }`}
-                      value={row.status}
-                      onChange={(e) =>
-                        handleStatusChange(row.id, e.target.value)
-                      }
-                    >
-                      {Object.entries(STATUS_MAP).map(([key, value]) => (
-                        <option key={key} value={key}>
-                          {value.label}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <div className="no-data-msg">내역이 없습니다.</div>
-            )}
+                ))
+              : !loading && <div className="no-data-msg">내역이 없습니다.</div>}
           </div>
         </div>
 
@@ -338,8 +326,7 @@ export default function ReservationManagePage() {
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage === 1}
           >
-            {" "}
-            &lt;{" "}
+            &lt;
           </button>
           {Array.from(
             { length: endPage - startPage + 1 },
@@ -350,8 +337,7 @@ export default function ReservationManagePage() {
               className={`page-btn ${currentPage === num ? "active" : ""}`}
               onClick={() => handlePageChange(num)}
             >
-              {" "}
-              {num}{" "}
+              {num}
             </button>
           ))}
           <button
@@ -359,8 +345,7 @@ export default function ReservationManagePage() {
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
           >
-            {" "}
-            &gt;{" "}
+            &gt;
           </button>
         </div>
       </section>

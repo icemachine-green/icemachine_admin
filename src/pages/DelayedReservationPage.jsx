@@ -2,20 +2,15 @@ import React, { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
-import { fetchRecentReservations } from "../store/thunks/adminReservationThunk.js";
-import LiveClock from "../common/LiveClock.jsx"; // 🚩 상대경로 적용
+import {
+  fetchRecentReservations,
+  fetchReservationDetail,
+} from "../store/thunks/adminReservationThunk.js";
+import LiveClock from "../common/LiveClock.jsx";
+import ReservationDetailModal from "./ReservationDetailModal.jsx";
 import "./DelayedReservationPage.css";
 
-// 포맷팅 유틸 함수
-const formatSizeType = (sizeType) => {
-  if (!sizeType) return "-";
-  const upper = sizeType.toUpperCase();
-  if (upper.includes("SMALL") || upper.includes("소형")) return "소형";
-  if (upper.includes("MEDIUM") || upper.includes("중형")) return "중형";
-  if (upper.includes("LARGE") || upper.includes("대형")) return "대형";
-  return sizeType;
-};
-
+// 서비스 타입 한글 매핑 유틸
 const formatServiceType = (serviceType) => {
   const typeMap = {
     VISIT_CHECK: "점검",
@@ -34,19 +29,15 @@ export default function DelayedReservationPage() {
   const [currentNow, setCurrentNow] = useState(dayjs());
   const [lastUpdated, setLastUpdated] = useState(dayjs());
 
+  // 리덕스 상태 가져오기
   const { recentReservations: reservations, loading } = useSelector(
     (state) => state.adminReservation
   );
 
   /**
-   * API 데이터 로드 함수
-   * useCallback으로 감싸서 리렌더링 시 함수가 재생성되는 것을 방지합니다.
+   * API 데이터 로드 (1분 주기 폴링)
    */
   const loadData = useCallback(() => {
-    console.log(
-      "📡 [지연 감시 센터] 데이터를 새로고침합니다:",
-      dayjs().format("HH:mm:ss")
-    );
     dispatch(
       fetchRecentReservations({
         page: 1,
@@ -59,23 +50,25 @@ export default function DelayedReservationPage() {
     setLastUpdated(dayjs());
   }, [dispatch]);
 
-  /**
-   * 최초 로드 및 1분 폴링 설정
-   * loadData가 메모이제이션되어 있어 타이머가 중복 생성되지 않습니다.
-   */
   useEffect(() => {
     loadData();
-    const pollingTimer = setInterval(loadData, 60000); // 1분
+    const pollingTimer = setInterval(loadData, 60000);
     return () => clearInterval(pollingTimer);
   }, [loadData]);
 
   /**
    * 시계에서 매 초 전달받는 시간을 상태에 저장
-   * (지연 시간 실시간 계산용)
    */
   const handleTick = useCallback((now) => {
     setCurrentNow(now);
   }, []);
+
+  /**
+   * 상세 모달 열기
+   */
+  const handleOpenDetail = (id) => {
+    dispatch(fetchReservationDetail(id));
+  };
 
   /**
    * 10분 유예 로직 필터링
@@ -89,9 +82,10 @@ export default function DelayedReservationPage() {
       );
       return currentNow.isAfter(gracePeriodThreshold);
     }) || [];
-  console.log("시계 분리 확인");
+
   return (
     <div className="DelayedReservationPage-container">
+      {/* 헤더 영역 */}
       <div className="DelayedReservationPage-header">
         <div className="DelayedReservationPage-title-area">
           <h1 className="DelayedReservationPage-title">
@@ -117,20 +111,21 @@ export default function DelayedReservationPage() {
         현재 지연 의심 항목: <strong>{delayedList.length}</strong>건
       </div>
 
+      {/* 테이블 영역 */}
       <section className="DelayedReservationPage-table-wrapper">
         <div className="DelayedReservationPage-table">
-          {/* Table Head */}
+          {/* 컬럼 헤더 */}
           <div className="DelayedReservationPage-table-row DelayedReservationPage-table-head">
-            <div>ID</div>
+            <div>지연 상태</div>
             <div>예약 일시</div>
             <div>매장명 / 주소</div>
-            <div>서비스 정보</div>
-            <div>고객 정보</div>
             <div>담당 기사</div>
-            <div>지연 시간</div>
+            <div>고객 정보</div>
+            <div>서비스 정보</div>
+            <div>관리</div>
           </div>
 
-          {/* Table Body */}
+          {/* 테이블 바디 */}
           <div
             className={`DelayedReservationPage-table-body ${
               loading ? "is-loading" : ""
@@ -142,13 +137,26 @@ export default function DelayedReservationPage() {
                     dayjs(row.serviceStartTime),
                     "minute"
                   );
+
                   return (
                     <div
                       key={row.id}
                       className="DelayedReservationPage-table-row"
                     >
-                      <div className="cell-id">{row.id}</div>
+                      {/* 1. 지연 상태 */}
+                      <div className="cell-delay">
+                        <span
+                          className="delay-badge"
+                          style={{
+                            color:
+                              totalDelayMinutes >= 30 ? "#e74c3c" : "#f39c12",
+                          }}
+                        >
+                          {totalDelayMinutes.toLocaleString()}분 지연
+                        </span>
+                      </div>
 
+                      {/* 2. 예약 일시 */}
                       <div className="cell-composite">
                         <span className="cell-main">
                           {dayjs(row.serviceStartTime).format("HH:mm")}
@@ -156,27 +164,29 @@ export default function DelayedReservationPage() {
                         <span className="cell-sub">{row.reservedDate}</span>
                       </div>
 
+                      {/* 3. 매장명 / 주소 */}
                       <div className="cell-composite">
                         <span className="cell-main">
                           {row.business?.name || "-"}
                         </span>
-                        <span
-                          className="cell-sub"
-                          style={{ fontSize: "0.75rem", color: "#888" }}
-                        >
-                          {row.business?.address || "주소 정보 없음"}
+                        <span className="cell-sub">
+                          {row.business?.address}
                         </span>
                       </div>
 
+                      {/* 4. 담당 기사 */}
                       <div className="cell-composite">
                         <span className="cell-main">
-                          {formatServiceType(row.servicePolicy?.serviceType)}
+                          {row.engineer?.name || (
+                            <span className="unassigned">미배정</span>
+                          )}
                         </span>
                         <span className="cell-sub">
-                          {row.iceMachine?.modelName || "-"}
+                          {row.engineer?.phoneNumber || "-"}
                         </span>
                       </div>
 
+                      {/* 5. 고객 정보 */}
                       <div className="cell-composite">
                         <span className="cell-main">
                           {row.user?.name || "-"}
@@ -186,35 +196,39 @@ export default function DelayedReservationPage() {
                         </span>
                       </div>
 
-                      <div>
-                        {row.engineer?.name || (
-                          <span style={{ color: "#e74c3c" }}>미배정</span>
-                        )}
+                      {/* 6. 서비스 정보 */}
+                      <div className="cell-composite">
+                        <span className="cell-main">
+                          {formatServiceType(row.servicePolicy?.serviceType)}
+                        </span>
+                        <span className="cell-sub">
+                          {row.iceMachine?.modelName}
+                        </span>
                       </div>
 
-                      <div className="cell-delay">
-                        <span
-                          className="delay-text"
-                          style={{
-                            color:
-                              totalDelayMinutes >= 30 ? "#e74c3c" : "inherit",
-                            fontWeight: "bold",
-                          }}
+                      {/* 7. 관리 버튼 */}
+                      <div className="cell-action">
+                        <button
+                          className="manage-btn"
+                          onClick={() => handleOpenDetail(row.id)}
                         >
-                          {totalDelayMinutes.toLocaleString()}분 지연
-                        </span>
+                          상세
+                        </button>
                       </div>
                     </div>
                   );
                 })
               : !loading && (
                   <div className="DelayedReservationPage-no-data">
-                    현재 지연된 예약 내역이 없습니다.
+                    지연된 내역이 없습니다.
                   </div>
                 )}
           </div>
         </div>
       </section>
+
+      {/* 상세 정보 모달 */}
+      <ReservationDetailModal />
     </div>
   );
 }
