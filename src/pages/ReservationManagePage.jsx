@@ -7,6 +7,7 @@ import {
   updateReservationStatusThunk,
 } from "../store/thunks/adminReservationThunk.js";
 import LiveClock from "../common/LiveClock.jsx";
+import ReassignModal from "../common/ReassignModal.jsx";
 import "./ReservationManagePage.css";
 
 const STATUS_MAP = {
@@ -45,6 +46,11 @@ export default function ReservationManagePage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [lastUpdated, setLastUpdated] = useState(dayjs());
 
+  const [reassignModal, setReassignModal] = useState({
+    open: false,
+    target: null,
+  });
+
   const limit = 8;
   const pageGroupSize = 5;
 
@@ -61,7 +67,6 @@ export default function ReservationManagePage() {
       orderBy: "reservedDate",
       sortBy: "ASC",
     };
-
     if (appliedSearch.value) {
       const val = appliedSearch.value;
       switch (appliedSearch.type) {
@@ -90,7 +95,6 @@ export default function ReservationManagePage() {
       filters.startDate = dayjs().format("YYYY-MM-DD");
       filters.mode = "future";
     }
-
     dispatch(fetchRecentReservations(filters));
     setLastUpdated(dayjs());
   }, [dispatch, currentPage, appliedSearch, selectedDate, limit]);
@@ -160,6 +164,10 @@ export default function ReservationManagePage() {
     }
   };
 
+  const handleOpenReassign = (row) => {
+    setReassignModal({ open: true, target: row });
+  };
+
   return (
     <div className="reservation-manage-container">
       <div className="reservation-manage-header-flex">
@@ -172,14 +180,13 @@ export default function ReservationManagePage() {
               : "전체 예약 관리 (오늘 이후)"}
           </h1>
           <div className="manage-sync-info">
-            <span className="live-dot"></span>
-            마지막 갱신: {lastUpdated.format("HH:mm:ss")} |{" "}
+            <span className="live-dot"></span> 마지막 갱신:{" "}
+            {lastUpdated.format("HH:mm:ss")} |{" "}
             <span className="current-time">
               현재 시각: <LiveClock />{" "}
             </span>
           </div>
         </div>
-        {/* 🚩 지연 감시 센터 버튼 삭제 완료 (헤더 통합) */}
       </div>
 
       <div className="admin-search-section">
@@ -263,6 +270,12 @@ export default function ReservationManagePage() {
                         <>
                           <strong>
                             {row.engineer.User?.name || row.engineer.name}
+                            <button
+                              className="reassign-icon-btn-small"
+                              onClick={() => handleOpenReassign(row)}
+                            >
+                              🔄
+                            </button>
                           </strong>
                           <span className="sub-info">
                             {row.engineer.User?.phoneNumber ||
@@ -271,7 +284,19 @@ export default function ReservationManagePage() {
                           </span>
                         </>
                       ) : (
-                        <span className="unassigned-text">미배정</span>
+                        /* 🚩 기존 UI와 동일한 구조로 맵핑 */
+                        <>
+                          <strong>
+                            -
+                            <button
+                              className="reassign-icon-btn-small"
+                              onClick={() => handleOpenReassign(row)}
+                            >
+                              🔄
+                            </button>
+                          </strong>
+                          <span className="sub-info">미배정 상태</span>
+                        </>
                       )}
                     </div>
                     <div className="col-service">
@@ -285,7 +310,7 @@ export default function ReservationManagePage() {
                         {row.serviceStartTime
                           ? dayjs(row.serviceStartTime).format("HH:mm")
                           : "00:00"}{" "}
-                        ~
+                        ~{" "}
                         {row.serviceEndTime
                           ? dayjs(row.serviceEndTime).format("HH:mm")
                           : "00:00"}
@@ -301,11 +326,16 @@ export default function ReservationManagePage() {
                           handleStatusChange(row.id, e.target.value)
                         }
                       >
-                        {Object.entries(STATUS_MAP).map(([key, value]) => (
-                          <option key={key} value={key}>
-                            {value.label}
-                          </option>
-                        ))}
+                        <option value={row.status}>
+                          {STATUS_MAP[row.status]?.label || row.status}
+                        </option>
+                        {Object.entries(STATUS_MAP)
+                          .filter(([key]) => key !== row.status)
+                          .map(([key, value]) => (
+                            <option key={key} value={key}>
+                              {value.label}
+                            </option>
+                          ))}
                       </select>
                     </div>
                   </div>
@@ -343,6 +373,15 @@ export default function ReservationManagePage() {
           </button>
         </div>
       </section>
+
+      {reassignModal.open && (
+        <ReassignModal
+          isOpen={reassignModal.open}
+          onClose={() => setReassignModal({ open: false, target: null })}
+          reservationData={reassignModal.target}
+          onSuccess={loadData}
+        />
+      )}
     </div>
   );
 }

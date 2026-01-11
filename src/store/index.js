@@ -4,6 +4,7 @@ import authReducer from "./slices/authSlice.js";
 import adminReservationReducer from "./slices/adminReservationSlice.js";
 import adminManageReducer from "./slices/adminManageSlice.js";
 import delayAlertReducer from "./slices/delayAlertSlice.js"; // 🚩 새로 만든 리듀서
+import adminReassignReducer from "./slices/adminReassignSlice";
 import { injectStoreInAxios } from "../api/axiosInstance.js";
 
 export const store = configureStore({
@@ -12,8 +13,8 @@ export const store = configureStore({
     // 키 이름을 컴포넌트 useSelector에서 사용할 이름과 맞춰줍니다.
     adminReservation: adminReservationReducer,
     adminManage: adminManageReducer,
-    // 🚩 'delayAlertReducer' 보다는 'delayAlert'로 쓰는 게 컴포넌트에서 쓰기 편합니다.
     delayAlert: delayAlertReducer,
+    adminReassign: adminReassignReducer,
   },
 });
 

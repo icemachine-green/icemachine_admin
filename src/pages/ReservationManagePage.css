@@ -229,7 +229,6 @@
   transform: scale(0.95);
 }
 
-/* 상태별 배경색 */
 .status-select.status-pending {
   background-color: #4f6bed !important;
 }
@@ -246,7 +245,6 @@
   background-color: #e14b4b !important;
 }
 
-/* 드랍다운 내부 옵션 스타일 (일부 브라우저 제한적) */
 .status-select option {
   background-color: #fff;
   color: #333;
@@ -284,9 +282,31 @@
   opacity: 0.4;
   cursor: not-allowed;
 }
+
 .no-data-msg {
   padding: 60px;
   text-align: center;
   color: #999;
   font-size: 15px;
+}
+
+/* 🚩 추가: 테이블 내 재배정 아이콘 스타일 */
+.reassign-icon-btn-small {
+  background: #f0f2f5;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  font-size: 11px;
+  margin-left: 6px;
+  padding: 2px 4px;
+  border-radius: 4px;
+  vertical-align: middle;
+  transition: all 0.2s;
+}
+.reassign-icon-btn-small:hover {
+  background: #e6e9ed;
+  border-color: #ccc;
+}
+.unassigned-text {
+  cursor: pointer;
+  text-decoration: underline;
 }
