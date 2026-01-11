@@ -52,7 +52,7 @@ export default function DelayedReservationPage() {
 
   useEffect(() => {
     loadData();
-    const pollingTimer = setInterval(loadData, 60000);
+    const pollingTimer = setInterval(loadData, 60000); // 60000: 1분
     return () => clearInterval(pollingTimer);
   }, [loadData]);
 

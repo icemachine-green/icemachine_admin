@@ -1,34 +1,55 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
-
-// 🚩 지연 감시 전용 텅크 (기존 API를 쓰되 저장소만 다름)
-export const fetchDelayMonitorData = createAsyncThunk(
-  "delayAlert/fetchData",
-  async (_, { rejectWithValue }) => {
-    try {
-      const response = await axios.get(
-        "/api/admin/reservations/recent?page=1&size=200"
-      );
-      return response.data.data; // 200개 데이터 반환
-    } catch (error) {
-      return rejectWithValue(error.response.data);
-    }
-  }
-);
+import { createSlice } from "@reduxjs/toolkit";
+import { fetchDelayMonitorData } from "../thunks/delayAlertThunk";
+import dayjs from "dayjs";
 
 const delayAlertSlice = createSlice({
   name: "delayAlert",
   initialState: {
-    delayData: [], // 🚩 대시보드 테이블과는 완전히 별개의 주머니!
+    delayData: [],
+    delayedItems: [], // 🚩 헤더 숫자에 반영될 바구니
     loading: false,
+    error: null,
   },
-  reducers: {},
+  reducers: {
+    clearDelayAlert: (state) => {
+      state.delayedItems = [];
+    },
+  },
   extraReducers: (builder) => {
-    builder.addCase(fetchDelayMonitorData.fulfilled, (state, action) => {
-      state.delayData = action.payload;
-      state.loading = false;
-    });
+    builder
+      .addCase(fetchDelayMonitorData.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchDelayMonitorData.fulfilled, (state, action) => {
+        state.loading = false;
+        const result = action.payload.data;
+        const items = result?.items || [];
+        state.delayData = items;
+
+        // 🚩 [DelayedReservationPage 로직 그대로 이식]
+        const currentNow = dayjs();
+        state.delayedItems = items.filter((row) => {
+          // 1. 상태가 CONFIRMED여야 함
+          if (row.status !== "CONFIRMED") return false;
+
+          // 2. 시작 시간 + 10분 유예 로직
+          const gracePeriodThreshold = dayjs(row.serviceStartTime).add(
+            10,
+            "minute"
+          );
+
+          // 현재 시간이 유예 시간을 지났다면 true (지연)
+          return currentNow.isAfter(gracePeriodThreshold);
+        });
+
+        state.error = null;
+      })
+      .addCase(fetchDelayMonitorData.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
   },
 });
 
+export const { clearDelayAlert } = delayAlertSlice.actions;
 export default delayAlertSlice.reducer;

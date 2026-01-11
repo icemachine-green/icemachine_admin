@@ -126,3 +126,41 @@
 .arrow-toggle.open::before {
   transform: rotate(-135deg);
 }
+
+/* =========================================
+   🚨 작업 지연 발생 시 시각 피드백 (헤더 강조)
+   ========================================= */
+
+/* 1. 헤더 색상 및 그림자 애니메이션 */
+@keyframes header-emergency-pulse {
+  0% {
+    background-color: #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  }
+  50% {
+    background-color: #fff1f0;
+    box-shadow: 0 0 20px rgba(255, 77, 79, 0.4);
+  }
+  100% {
+    background-color: #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  }
+}
+
+/* 2. body에 visual-alert-active 클래스가 있을 때 헤더 스타일 변경 */
+body.visual-alert-active .header {
+  animation: header-emergency-pulse 1.5s infinite ease-in-out;
+  border-bottom: 2px solid #ff4d4f; /* 헤더 하단 선을 빨간색으로 */
+}
+
+/* 3. 사이드바나 컨텐츠 영역에도 붉은 기운 추가 (선택) */
+body.visual-alert-active .main-layout-container {
+  border: 4px solid #ff4d4f;
+  box-sizing: border-box;
+}
+
+/* 4. 지연 감시 버튼 더 강하게 깜빡이기 */
+body.visual-alert-active .header-delay-monitor-btn {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(255, 77, 79, 0.6);
+}

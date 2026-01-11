@@ -1,125 +1,53 @@
-import React, { useEffect, useState, useCallback } from "react";
+import { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import dayjs from "dayjs";
 
 export default function DelayAlertManager() {
-  const navigate = useNavigate();
+  // 리덕스에서 전체 상태를 가져와서 데이터가 갱신될 때마다 반응하게 함
+  const delayAlertState = useSelector((state) => state.delayAlert);
+  const { delayedItems } = delayAlertState;
+  const count = delayedItems?.length || 0;
 
-  // 🚩 1. 구독하는 주머니를 우리가 만든 'delayAlert'로 교체!
-  const { delayData } = useSelector((state) => state.delayAlert);
+  const speakNotification = (text) => {
+    if (!window.speechSynthesis) return;
+    // 중요: 소리가 씹히지 않도록 기존 음성을 즉시 강제 종료
+    window.speechSynthesis.cancel();
 
-  const [showNotification, setShowNotification] = useState(false);
-  const [prevCount, setPrevCount] = useState(0);
-
-  // 🔊 음성 알림 (TTS)
-  const speakAlert = useCallback((count) => {
-    if ("speechSynthesis" in window) {
-      window.speechSynthesis.cancel();
-      const message = new SpeechSynthesisUtterance(
-        `태호님, 작업 지연 의심 사례가 ${count}건 발생했습니다. 확인이 필요합니다.`
-      );
-      message.lang = "ko-KR";
-      window.speechSynthesis.speak(message);
-    }
-  }, []);
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "ko-KR";
+    utterance.rate = 0.9;
+    window.speechSynthesis.speak(utterance);
+  };
 
   useEffect(() => {
-    // 🚩 2. 데이터가 없으면 계산 안 함
-    if (!delayData || delayData.length === 0) {
-      console.log("🔊 [Manager] 데이터가 비어있습니다.");
-      return;
+    console.log("🧐 현재 지연 건수 체크:", count);
+
+    if (count > 0) {
+      const message =
+        "지연 작업이 감지되었습니다. 지연 작업 관리를 확인해 주세요.";
+
+      // 시각 효과 활성화
+      document.body.classList.add("visual-alert-active");
+
+      // 음성 및 알림 실행
+      speakNotification(message);
+
+      if (Notification.permission === "granted") {
+        new Notification("🚨 작업 지연 발생", {
+          body: message,
+          tag: "delay-alert",
+          renotify: true,
+        });
+      }
+
+      document.title = `⚠️ [${count}건] 지연 발생!`;
+    } else {
+      // 0건이면 모든 효과 제거
+      document.body.classList.remove("visual-alert-active");
+      document.title = "관리 시스템";
     }
 
-    // 🚩 3. 10분 유예 로직 적용해서 '진짜 지연'만 필터링
-    const now = dayjs();
-    const currentDelayedItems = delayData.filter((res) => {
-      if (res.status !== "CONFIRMED") return false;
-      const startTime = dayjs(res.serviceStartTime || res.reservationTime);
-      return now.isAfter(startTime.add(10, "minute")); // 10분 유예
-    });
+    // 이 useEffect는 delayedItems가 "새로 들어올 때마다" 실행됩니다.
+  }, [delayAlertState]); // 🚩 배열 전체 상태를 감시하여 리렌더링 시 무조건 실행 유도
 
-    const currentCount = currentDelayedItems.length;
-    console.log(
-      `🔊 [Manager] 현재 지연 건수: ${currentCount} (이전: ${prevCount})`
-    );
-
-    // 🚩 4. 개수가 늘어났을 때만 알림 발생
-    if (currentCount > prevCount && currentCount > 0) {
-      console.log("🚨 [Manager] 알림 조건 충족! 소리를 재생합니다.");
-      setShowNotification(true);
-      speakAlert(currentCount);
-    }
-
-    setPrevCount(currentCount);
-  }, [delayData, prevCount, speakAlert]);
-
-  if (!showNotification) return null;
-
-  return (
-    <div style={notificationBoxStyle}>
-      <div
-        style={{
-          fontWeight: "bold",
-          fontSize: "16px",
-          marginBottom: "8px",
-          color: "#ff4d4f",
-        }}
-      >
-        🚨 지연 의심 알림
-      </div>
-      <p style={{ fontSize: "14px", margin: "0 0 15px 0" }}>
-        현재 <b>{prevCount}건</b>의 작업이 10분 이상 지연되고 있습니다.
-      </p>
-      <div style={{ display: "flex", gap: "8px" }}>
-        <button
-          onClick={() => {
-            navigate("/reservation/delay");
-            setShowNotification(false);
-          }}
-          style={actionBtnStyle}
-        >
-          확인하러 가기
-        </button>
-        <button
-          onClick={() => setShowNotification(false)}
-          style={closeBtnStyle}
-        >
-          닫기
-        </button>
-      </div>
-    </div>
-  );
+  return null;
 }
-
-// 스타일은 태호님이 주신 것 그대로 사용 (생략)
-const notificationBoxStyle = {
-  position: "fixed",
-  bottom: "30px",
-  right: "30px",
-  width: "300px",
-  backgroundColor: "#fff",
-  padding: "20px",
-  borderRadius: "12px",
-  boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
-  borderLeft: "6px solid #ff4d4f",
-  zIndex: 10000,
-};
-const actionBtnStyle = {
-  flex: 1,
-  padding: "8px",
-  background: "#ff4d4f",
-  color: "#fff",
-  border: "none",
-  borderRadius: "4px",
-  cursor: "pointer",
-  fontWeight: "bold",
-};
-const closeBtnStyle = {
-  flex: 1,
-  padding: "8px",
-  background: "#f0f0f0",
-  border: "none",
-  borderRadius: "4px",
-  cursor: "pointer",
-};

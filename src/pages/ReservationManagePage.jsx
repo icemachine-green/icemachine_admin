@@ -179,12 +179,7 @@ export default function ReservationManagePage() {
             </span>
           </div>
         </div>
-        <button
-          className="delay-monitor-btn"
-          onClick={() => navigate("/reservation/delay")}
-        >
-          🚨 작업 지연 감시 센터
-        </button>
+        {/* 🚩 지연 감시 센터 버튼 삭제 완료 (헤더 통합) */}
       </div>
 
       <div className="admin-search-section">
@@ -281,7 +276,6 @@ export default function ReservationManagePage() {
                     </div>
                     <div className="col-service">
                       <span className="service-text">
-                        {/* 서버에서 오는 한글 데이터('프리미엄' 등)를 그대로 출력 */}
                         {row.servicePolicy?.serviceType || "-"}
                       </span>
                     </div>
