@@ -46,7 +46,6 @@ export default function ReservationManagePage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [lastUpdated, setLastUpdated] = useState(dayjs());
 
-  // ✅ 강조 효과를 위한 상태값 추가
   const [updatedId, setUpdatedId] = useState(null);
 
   const [reassignModal, setReassignModal] = useState({
@@ -108,11 +107,9 @@ export default function ReservationManagePage() {
     return () => clearInterval(pollingTimer);
   }, [loadData]);
 
-  // ✅ 재배정 성공 시 호출될 핸들러
   const handleReassignSuccess = (id) => {
     setUpdatedId(id);
-    loadData(); // 데이터 갱신
-    // 3초 후 강조 효과 제거
+    loadData();
     setTimeout(() => {
       setUpdatedId(null);
     }, 3000);
@@ -257,7 +254,6 @@ export default function ReservationManagePage() {
           <div className={`manage-table-body ${loading ? "is-loading" : ""}`}>
             {reservations?.length > 0
               ? reservations.map((row) => (
-                  /* ✅ updatedId와 일치할 경우 하이라이트 클래스 추가 */
                   <div
                     key={row.id}
                     className={`manage-table-row ${
@@ -286,18 +282,34 @@ export default function ReservationManagePage() {
                         {formatSize(row.iceMachine?.sizeType)}
                       </span>
                     </div>
+
+                    {/* 담당 기사 컬럼: UI 개선 적용 영역 */}
                     <div className="col-engineer info-cell">
                       {row.engineer ? (
                         <>
-                          <strong>
-                            {row.engineer.User?.name || row.engineer.name}
+                          <div className="engineer-header-row">
+                            <strong className="eng-name">
+                              {row.engineer.User?.name || row.engineer.name}
+                            </strong>
                             <button
-                              className="reassign-icon-btn-small"
+                              className="reassign-action-btn"
                               onClick={() => handleOpenReassign(row)}
                             >
-                              🔄
+                              <svg
+                                width="11"
+                                height="11"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="3"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              >
+                                <path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"></path>
+                              </svg>
+                              재배정
                             </button>
-                          </strong>
+                          </div>
                           <span className="sub-info">
                             {row.engineer.User?.phoneNumber ||
                               row.engineer.phoneNumber ||
@@ -306,19 +318,22 @@ export default function ReservationManagePage() {
                         </>
                       ) : (
                         <>
-                          <strong>
-                            -
+                          <div className="engineer-header-row">
+                            <strong className="eng-name unassigned">-</strong>
                             <button
-                              className="reassign-icon-btn-small"
+                              className="reassign-action-btn"
                               onClick={() => handleOpenReassign(row)}
                             >
-                              🔄
+                              기사 배정
                             </button>
-                          </strong>
-                          <span className="sub-info">미배정 상태</span>
+                          </div>
+                          <span className="sub-info unassigned-text">
+                            미배정 상태
+                          </span>
                         </>
                       )}
                     </div>
+
                     <div className="col-service">
                       <span className="service-text">
                         {row.servicePolicy?.serviceType || "-"}

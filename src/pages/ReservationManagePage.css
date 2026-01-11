@@ -290,21 +290,55 @@
   font-size: 15px;
 }
 
-/* 🚩 추가: 테이블 내 재배정 아이콘 스타일 */
-.reassign-icon-btn-small {
-  background: #f0f2f5;
-  border: 1px solid #ddd;
-  cursor: pointer;
-  font-size: 11px;
-  margin-left: 6px;
-  padding: 2px 4px;
-  border-radius: 4px;
-  vertical-align: middle;
-  transition: all 0.2s;
+/* --- 담당 기사 컬럼 UI 개선 추가 --- */
+
+/* 기사 이름과 재배정 버튼을 가로로 정렬 */
+.engineer-header-row {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* 이름과 버튼 사이의 적절한 간격 */
+  margin-bottom: 2px;
 }
-.reassign-icon-btn-small:hover {
-  background: #e6e9ed;
-  border-color: #ccc;
+
+.eng-name {
+  font-size: 13.5px;
+  color: #333;
+}
+
+/* 텍스트 기반의 세련된 재배정 버튼 */
+.reassign-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: transparent;
+  border: none;
+  color: #4f6bed; /* 시스템 메인 컬러 활용 */
+  font-size: 11px;
+  font-weight: 700;
+  padding: 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  opacity: 0.7;
+}
+
+.reassign-action-btn svg {
+  margin-top: 0.5px;
+}
+
+.reassign-action-btn:hover {
+  opacity: 1;
+  text-decoration: underline;
+  transform: translateX(2px); /* 살짝 우측으로 이동하는 피드백 */
+}
+
+/* 미배정 상태 스타일 보정 */
+.eng-name.unassigned {
+  color: #bbb;
+}
+
+.sub-info.unassigned-text {
+  color: #e14b4b;
+  font-weight: 500;
 }
 .unassigned-text {
   cursor: pointer;
