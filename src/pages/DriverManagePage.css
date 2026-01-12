@@ -2,140 +2,175 @@
    전체 컨테이너
 ========================= */
 .driviermanage-container {
-	background-color: #F3F2F4;
-	height: 100%;
-	padding: 32px;
+  background-color: #f3f2f4;
+  height: 100%;
+  padding: 32px;
+  box-sizing: border-box;
 }
 
-/* =========================
-   설명 문구
-========================= */
 .driviermanage-greeting {
-	font-size: 25px;
-	font-weight: 600;
-	margin-bottom: 40px;
-	color: #2f2f2f;
+  font-size: 25px;
+  font-weight: 700;
+  margin-bottom: 30px;
+  color: #2f2f2f;
 }
 
 /* =========================
-   흰색 박스
+   흰색 박스 & 테이블 레이아웃
 ========================= */
 .driviermanage-table-wrapper {
-	background-color: #ffffff;
-	border-radius: 16px;
-	padding: 24px;
-	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-	height: 584px;
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  min-height: 600px;
+  display: flex;
+  flex-direction: column;
 }
 
-/* =========================
-   내부 레이아웃
-========================= */
 .driviermanage-table {
-	display: flex;
-	flex-direction: column;
-	height: 100%;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 /* =========================
-   Grid 테이블 행
+   Grid 테이블 행 (비율 조정)
 ========================= */
 .driver-table-row {
-	display: grid;
-	grid-template-columns:
-		0.7fr
-		/* 기사번호 */
-		1fr
-		/* 기사명 */
-		1fr
-		/* 기술등급 */
-		1.2fr
-		/* 연락처 */
-		1.2fr
-		/* 근무가능날짜 */
-		1fr
-		/* 근무시작시간 */
-		0.8fr;
-	/* 상태 */
-	align-items: center;
-	padding: 14px 0;
-	border-bottom: 1px solid #E6E6E6;
-	font-size: 14px;
-	text-align: center;
-	color: #333;
+  display: grid;
+  /* 기사번호, 기사명, 등급, 연락처, 입사일, 완료건수, 상태 */
+  grid-template-columns: 0.6fr 1fr 1fr 1.3fr 1.2fr 0.8fr 1fr;
+  align-items: center;
+  padding: 16px 0;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+  text-align: center;
+  color: #333;
 }
 
-.driver-table-row:last-child {
-	border-bottom: none;
-}
-
-/* =========================
-   테이블 헤더
-========================= */
 .driver-table-head {
-	font-weight: 600;
-	color: #555;
-	background-color: #f6f6f7;
-	border-bottom: 1px solid #D9D9D9;
+  font-weight: 700;
+  color: #777;
+  background-color: #f9f9fb;
+  border-bottom: 2px solid #ddd;
+  border-radius: 8px 8px 0 0;
 }
 
 /* =========================
-   상태 배지
+   상태 배지 (디자인 통일)
 ========================= */
 .status-badge {
-	display: inline-block;
-	padding: 6px 12px;
-	border-radius: 12px;
-	font-size: 13px;
-	font-weight: 600;
-	color: #fff;
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+  min-width: 60px;
 }
 
-/* 상태 컬러 */
 .greencolor {
-	background-color: #3AA76D;
+  background-color: #3aa76d;
 }
-
 .redcolor {
-	background-color: #E14B4B;
+  background-color: #e14b4b;
 }
-
-.bluecolor {
-	background-color: #4F6BED;
-}
-
-.orangecolor {
-	background-color: #E68A2E;
-}
-
-.purplecolor {
-	background-color: #9B6EF3;
+.graycolor {
+  background-color: #8b8b8b;
 }
 
 /* =========================
-   페이지네이션
+   페이지네이션 (중앙 정렬 보정)
 ========================= */
 .pagination {
-	margin-top: auto;
-	padding-top: 20px;
-	display: flex;
-	justify-content: center;
-	gap: 6px;
+  display: flex;
+  justify-content: center; /* 가로 중앙 정렬 */
+  align-items: center;
+  gap: 8px;
+  margin-top: auto; /* 테이블 하단 고정 */
+  padding-top: 30px;
+  border-top: 1px solid #f0f0f0;
+  width: 100%; /* 전체 너비 확보 */
 }
 
 .page-btn {
-	min-width: 32px;
-	height: 32px;
-	border-radius: 6px;
-	border: 1px solid #ddd;
-	background-color: #fff;
-	font-size: 13px;
-	color: #555;
-	cursor: pointer;
+  min-width: 36px;
+  height: 36px;
+  border: 1px solid #ddd;
+  background-color: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.page-btn:hover:not(:disabled) {
+  background-color: #f0f4ff;
+  border-color: #4f6bed;
+  color: #4f6bed;
 }
 
 .page-btn.active {
-	background-color: #2f2f2f;
-	color: #fff;
-	border-color: #2f2f2f;
+  background-color: #4f6bed;
+  color: #fff;
+  border-color: #4f6bed;
+  font-weight: 700;
+}
+
+.page-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.page-btn.arrow {
+  font-weight: bold;
+  color: #4f6bed;
+  font-family: "Courier New", Courier, monospace;
+}
+
+.page-btn.arrow:disabled {
+  color: #ccc;
+}
+
+/* =========================
+   기타 유틸리티 스타일
+========================= */
+.no-data {
+  padding: 100px 0;
+  text-align: center;
+  color: #999;
+}
+
+.summary-info {
+  font-size: 14px;
+  color: #666;
+  margin-left: 15px;
+  font-weight: normal;
+}
+
+.clickable-row {
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.clickable-row:hover {
+  background-color: #f8faff;
+}
+
+.emp-name {
+  font-weight: 600;
+}
+
+.completed-count {
+  font-weight: 600;
+  color: #4f6bed;
+}
+
+.is-loading {
+  opacity: 0.5;
+  pointer-events: none;
 }

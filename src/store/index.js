@@ -7,6 +7,7 @@ import delayAlertReducer from "./slices/delayAlertSlice.js"; // 🚩 새로 만�
 import adminReassignReducer from "./slices/adminReassignSlice";
 import servicePolicyReducer from "./slices/servicePolicySlice.js";
 import adminUserManageReducer from "./slices/adminUserManageSlice.js";
+import adminEngineerReducer from "./slices/adminEngineerSlice.js";
 import { injectStoreInAxios } from "../api/axiosInstance.js";
 
 export const store = configureStore({
@@ -19,6 +20,7 @@ export const store = configureStore({
     adminReassign: adminReassignReducer,
     servicePolicy: servicePolicyReducer,
     adminUserManage: adminUserManageReducer,
+    adminEngineer: adminEngineerReducer,
   },
 });
 
