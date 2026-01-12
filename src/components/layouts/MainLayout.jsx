@@ -25,7 +25,7 @@ export default function MainLayout() {
       dispatch(fetchDelayMonitorData());
       const timer = setInterval(() => {
         dispatch(fetchDelayMonitorData());
-      }, 5000); // 60000: 1초
+      }, 60000); // 60000: 1분
       return () => clearInterval(timer);
     }
   }, [dispatch, admin]); // admin을 의존성에 추가하여 401 에러 방지
