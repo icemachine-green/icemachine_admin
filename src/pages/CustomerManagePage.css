@@ -1,0 +1,220 @@
+/* ... 기존 스타일 유지 ... */
+
+.customermanage-container {
+  background-color: #f3f2f4;
+  height: 100%;
+  padding: 32px;
+}
+
+.customermanage-greeting {
+  font-size: 25px;
+  font-weight: 600;
+  margin-bottom: 40px;
+  color: #2f2f2f;
+}
+
+/* 검색 필터 영역 */
+.search-filter-wrapper {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.search-filter-form {
+  display: flex;
+  align-items: flex-end;
+  gap: 15px;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.select-group {
+  flex: 0.8;
+}
+
+.filter-group label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #666;
+}
+
+.filter-group input,
+.filter-group select {
+  padding: 10px 14px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  height: 42px;
+  box-sizing: border-box;
+  outline: none;
+}
+
+.search-submit-btn {
+  padding: 0 24px;
+  height: 42px;
+  background-color: #2f2f2f;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+
+.search-submit-btn:hover {
+  background-color: #4a4a4a;
+}
+
+/* 테이블 영역 */
+.customermanage-table-wrapper {
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  min-height: 600px;
+}
+
+.customermanage-table {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.customer-table-row {
+  display: grid;
+  grid-template-columns: 0.6fr 1fr 1.5fr 1fr 1fr 1fr 1fr;
+  align-items: center;
+  padding: 14px 0;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+  text-align: center;
+}
+
+.customer-table-head {
+  font-weight: 600;
+  background-color: #f8f9fa;
+  border-bottom: 2px solid #ddd;
+  border-radius: 8px 8px 0 0;
+  color: #444;
+}
+
+.table-content-area {
+  min-height: 440px;
+}
+
+/* 🚩 하이라이트 애니메이션 효과 */
+.highlight-fade {
+  animation: highlightFade 0.8s ease-out;
+}
+
+@keyframes highlightFade {
+  0% {
+    background-color: rgba(47, 47, 47, 0.08); /* 살짝 어두운 배경으로 시작 */
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+.is-loading {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.detail-btn {
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  background-color: #fff;
+  color: #444;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.detail-btn:hover {
+  background-color: #f8f9fa;
+  border-color: #bbb;
+}
+
+.status-badge {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  display: inline-block;
+}
+
+.greencolor {
+  background-color: #3aa76d;
+}
+.redcolor {
+  background-color: #e14b4b;
+}
+
+.pagination {
+  margin-top: auto;
+  padding-top: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+.page-btn,
+.arrow-btn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #ddd;
+  background-color: #fff;
+  cursor: pointer;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.page-btn.active {
+  background-color: #2f2f2f;
+  color: #fff;
+  border-color: #2f2f2f;
+}
+
+.arrow-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* 기존 CSS 하단에 추가 */
+
+.table-content-area {
+  min-height: 480px; /* 8줄 기준 높이 고정 */
+  position: relative;
+}
+
+.loading-row,
+.no-data-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 400px;
+  color: #888;
+  font-size: 15px;
+  width: 100%;
+}
+
+.is-loading {
+  opacity: 0.6;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}

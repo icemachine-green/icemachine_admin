@@ -1,0 +1,63 @@
+/* =========================
+   사이드바 컨테이너
+========================= */
+.sidebar-container {
+  width: 240px;
+  height: 100vh;
+
+  background-color: #2f3b4e; /* 어두운 네이비 */
+  color: #fff;
+
+  display: flex;
+  flex-direction: column;
+}
+
+/* =========================
+   사이드바 타이틀
+========================= */
+.sidebar-title {
+  font-size: 27px;
+  font-weight: 700;
+	padding-bottom: 29px;
+	text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+/* =========================
+   메뉴 영역
+========================= */
+.sidebar-menu {
+  display: flex;
+  flex-direction: column;
+  padding-top: 12px;
+}
+
+/* =========================
+   메뉴 아이템 (기본)
+========================= */
+.menu-item {
+  padding: 14px 20px;
+  font-size: 15px;
+
+  color: #ffffff;
+  text-decoration: none;
+
+  cursor: pointer;
+
+  transition: background-color 0.2s ease;
+}
+
+/* =========================
+   호버 시 반투명 배경
+========================= */
+.menu-item:hover {
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+/* =========================
+   활성화된 메뉴 (현재 페이지)
+========================= */
+.menu-item.active {
+  background-color: rgba(255, 255, 255, 0.2);
+  font-weight: 600;
+}

@@ -1,0 +1,117 @@
+/* 전체 페이지 - 기존 유지 */
+.admin-login-page {
+  width: 100vw;
+  height: 100vh;
+  background-color: #f3f2f4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* 로그인 카드 - 너비 확장 (480px -> 650px) */
+.admin-login-card {
+  width: 650px;
+  background-color: #ffffff;
+  border-radius: 20px; /* 조금 더 부드럽게 */
+  padding: 70px 60px; /* 내부 여백 확장 */
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* 타이틀 & 설명 - 사이즈 업 */
+.admin-login-title {
+  font-size: 36px; /* 28px -> 36px */
+  font-weight: 800;
+  letter-spacing: 2px;
+  margin-bottom: 16px;
+  color: #2f3b4e;
+}
+
+.admin-login-desc {
+  font-size: 16px; /* 14px -> 16px */
+  color: #666;
+  margin-bottom: 48px;
+  text-align: center;
+}
+
+/* 로그인 폼 - 간격 확대 */
+.admin-login-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 28px; /* 20px -> 28px */
+}
+
+.admin-login-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.admin-login-input-group label {
+  font-size: 15px;
+  font-weight: 600;
+  color: #444;
+}
+
+.admin-login-input-group input {
+  height: 56px; /* 44px -> 56px */
+  padding: 0 16px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  font-size: 16px;
+}
+
+.admin-login-input-group input:focus {
+  outline: none;
+  border-color: #2f3b4e;
+  box-shadow: 0 0 0 3px rgba(47, 59, 78, 0.1);
+}
+
+/* 로그인 버튼 - 크기 및 폰트 업 */
+.admin-login-button {
+  margin-top: 24px;
+  height: 60px; /* 48px -> 60px */
+  border-radius: 10px;
+  border: none;
+  background-color: #2f3b4e;
+  color: #fff;
+  font-size: 18px; /* 15px -> 18px */
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.admin-login-button:hover {
+  background-color: #1a2533;
+}
+
+/* 푸터 */
+.admin-login-footer {
+  margin-top: 40px;
+  font-size: 13px;
+  color: #aaa;
+}
+.status-badge.PENDING {
+  background-color: #e0f2fe;
+  color: #0369a1;
+} /* 하늘색 */
+.status-badge.CONFIRMED {
+  background-color: #f3e8ff;
+  color: #7e22ce;
+} /* 보라색 */
+.status-badge.START {
+  background-color: #dcfce7;
+  color: #15803d;
+} /* 초록색 */
+.status-badge.COMPLETED {
+  background-color: #ffedd5;
+  color: #c2410c;
+} /* 주황색 */
+.status-badge.CANCELED {
+  background-color: #fee2e2;
+  color: #b91c1c;
+} /* 빨간색 */

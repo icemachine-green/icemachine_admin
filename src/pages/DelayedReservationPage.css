@@ -1,0 +1,162 @@
+.DelayedReservationPage-container {
+  padding: 20px;
+  background-color: #f3f2f4;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+.DelayedReservationPage-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.DelayedReservationPage-title {
+  font-size: 24px;
+  font-weight: 800;
+  color: #1a1a1a;
+  letter-spacing: -0.5px;
+  margin: 0;
+}
+
+.DelayedReservationPage-sync-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  font-size: 13px;
+  color: #888;
+  margin-top: 8px;
+}
+
+.DelayedReservationPage-current-time {
+  font-weight: 600;
+  color: #0056b3;
+}
+
+.DelayedReservationPage-back-btn {
+  padding: 8px 16px;
+  background-color: #ffffff;
+  border: 1px solid #0056b3;
+  color: #0056b3;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.DelayedReservationPage-back-btn:hover {
+  background-color: #f0f7ff;
+}
+
+.DelayedReservationPage-summary {
+  margin-bottom: 20px;
+  padding: 16px 24px;
+  background-color: #fff1f0;
+  border: 1px solid #ffa39e;
+  border-radius: 12px;
+  color: #cf1322;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.DelayedReservationPage-table-wrapper {
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+/* 테이블 그리드 설정 */
+.DelayedReservationPage-table-row {
+  display: grid;
+  /* 지연상태(130px), 예약일시, 매장명, 담당기사, 고객정보, 서비스정보, 관리(100px) */
+  grid-template-columns: 130px 1fr 1.5fr 1.2fr 1.2fr 1fr 100px;
+  align-items: center;
+  padding: 18px 0; /* 행 간격 확보를 위해 패딩 증가 */
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 14px;
+  text-align: center;
+}
+
+.DelayedReservationPage-table-head {
+  font-weight: 700;
+  color: #555;
+  border-bottom: 2px solid #d9d9d9;
+  background-color: #fafafa;
+  padding: 12px 0;
+}
+
+.DelayedReservationPage-table-body {
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+/* 셀 내부 레이아웃 */
+.cell-composite {
+  display: flex;
+  flex-direction: column;
+  gap: 6px; /* 텍스트 사이 간격 증가 */
+  padding: 0 8px;
+}
+
+.cell-main {
+  font-weight: 700;
+  color: #262626;
+}
+
+.cell-sub {
+  font-size: 12px;
+  color: #8c8c8c;
+  line-height: 1.4;
+}
+
+/* 지연 상태 배지 - 개행 방지 */
+.delay-badge {
+  display: inline-block;
+  white-space: nowrap;
+  padding: 6px 12px;
+  background-color: #fff1f0;
+  border: 1px solid #ffa39e;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+/* 관리 버튼 수직/수평 정렬 */
+.cell-action {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.manage-btn {
+  padding: 6px 16px;
+  background-color: #ffffff;
+  border: 1px solid #d9d9d9;
+  color: #555;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.manage-btn:hover {
+  border-color: #0056b3;
+  color: #0056b3;
+  background-color: #f0f7ff;
+}
+
+.unassigned {
+  color: #ff4d4f;
+  font-weight: 600;
+}
+
+.DelayedReservationPage-no-data {
+  padding: 100px 0;
+  text-align: center;
+  color: #999;
+}

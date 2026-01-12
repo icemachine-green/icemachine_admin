@@ -1,0 +1,111 @@
+/* =========================
+   전체 레이아웃
+========================= */
+.servicepolicy-container {
+  width: 100%;
+}
+
+.servicepolicy-greeting {
+  font-size: 25px;
+  font-weight: 600;
+  margin-bottom: 35px;
+  color: #2f2f2f;
+}
+
+.servicepolicy-table-wrapper {
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+  min-height: 600px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* =========================
+   테이블 스타일 (중앙 정렬 강조)
+========================= */
+.policy-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.policy-table thead {
+  background-color: #f8f9fa;
+}
+
+.policy-table th {
+  padding: 16px 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #666;
+  border-bottom: 2px solid #eee;
+  text-align: center;
+}
+
+.policy-table td {
+  padding: 18px 12px;
+  font-size: 14px;
+  color: #333;
+  border-bottom: 1px solid #f2f2f2;
+  text-align: center;
+  vertical-align: middle;
+}
+
+/* 정책ID */
+.id-cell {
+  color: #999;
+  font-size: 13px;
+}
+
+.note-full-cell {
+  text-align: center;
+}
+
+.note-full-cell span {
+  display: inline-block;
+  text-align: left;
+  max-width: 90%;
+  line-height: 1.6;
+}
+
+/* 가격 (우측 정렬 및 강조) */
+.price-text {
+  font-weight: 800;
+  text-align: right !important;
+  padding-right: 30px !important;
+}
+
+/* =========================
+   공통 요소
+========================= */
+.status-msg {
+  padding: 100px !important;
+  text-align: center !important;
+  color: #aaa;
+}
+
+.pagination {
+  margin-top: auto;
+  padding-top: 30px;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.page-btn {
+  min-width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  border: 1px solid #e0e0e0;
+  background-color: #fff;
+  font-size: 13px;
+  cursor: pointer;
+  color: #666;
+}
+
+.page-btn.active {
+  background-color: #2f2f2f;
+  color: #fff;
+  border-color: #2f2f2f;
+}

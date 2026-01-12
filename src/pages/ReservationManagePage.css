@@ -1,0 +1,369 @@
+/* 레이아웃 컨테이너 */
+.reservation-manage-container {
+  height: 100%;
+  padding: 32px;
+  background-color: #f3f2f4;
+  box-sizing: border-box;
+}
+
+.reservation-manage-header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 30px;
+}
+
+.reservation-manage-greeting {
+  font-size: 25px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.manage-sync-info {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: #666;
+  gap: 8px;
+}
+
+.live-dot {
+  width: 8px;
+  height: 8px;
+  background-color: #3aa76d;
+  border-radius: 50%;
+  display: inline-block;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+.delay-monitor-btn {
+  background-color: #fff;
+  border: 1px solid #e14b4b;
+  color: #e14b4b;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.delay-monitor-btn:hover {
+  background-color: #e14b4b;
+  color: #fff;
+}
+
+/* 검색 섹션 */
+.admin-search-section {
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background-color: #fff;
+  padding: 16px 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border: 1px solid #ebebeb;
+}
+
+.admin-search-form {
+  display: flex;
+  gap: 10px;
+  flex: 1;
+  align-items: center;
+}
+
+.admin-search-select {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  background-color: #f9f9f9;
+  font-size: 14px;
+  font-weight: 600;
+  outline: none;
+  cursor: pointer;
+  min-width: 140px;
+}
+
+.admin-search-input-wrapper {
+  flex: 1;
+  display: flex;
+}
+
+.admin-search-input {
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  width: 100%;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.admin-search-input:focus {
+  border: 1px solid #4f6bed;
+  box-shadow: 0 0 0 2px rgba(79, 107, 237, 0.1);
+}
+
+.admin-search-submit-btn {
+  padding: 10px 28px;
+  background-color: #4f6bed;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  box-shadow: 0 2px 4px rgba(79, 107, 237, 0.3);
+  white-space: nowrap;
+}
+
+.admin-search-submit-btn:hover {
+  background-color: #3d58d4;
+}
+
+.admin-search-reset-btn {
+  padding: 10px 12px;
+  background-color: transparent;
+  color: #999;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  text-decoration: underline;
+  white-space: nowrap;
+}
+
+/* 테이블 공통 */
+.reservation-manage-table-wrapper {
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.table-header h2 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+.table-header h2 span {
+  font-size: 14px;
+  color: #888;
+  margin-left: 8px;
+}
+
+.manage-table-row {
+  display: grid;
+  grid-template-columns: 0.5fr 1.2fr 1.5fr 1.8fr 1.2fr 0.8fr 1.5fr 0.8fr;
+  width: 100%;
+  align-items: center;
+  padding: 14px 0;
+  border-bottom: 1px solid #eee;
+  font-size: 13.5px;
+}
+
+.table-head {
+  font-weight: 700;
+  color: #777;
+  background-color: #f9f9fb;
+  border-bottom: 2px solid #ddd;
+}
+
+.col-id,
+.col-service,
+.col-date,
+.col-status {
+  text-align: center;
+}
+.col-user,
+.col-business,
+.col-machine,
+.col-engineer {
+  text-align: left;
+  padding-left: 15px;
+}
+
+.info-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.sub-info {
+  font-size: 11px;
+  color: #949494;
+}
+.unassigned-text {
+  color: #e14b4b;
+  font-weight: 600;
+}
+
+/* 상태 선택 드랍다운 커스텀 */
+.status-select {
+  appearance: none;
+  width: 95px;
+  height: 32px;
+  padding: 0 24px 0 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff !important;
+  text-align: center;
+  border: none;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='white' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: calc(100% - 8px) center;
+  background-size: 10px;
+  transition: transform 0.1s ease;
+}
+
+.status-select:active {
+  transform: scale(0.95);
+}
+
+.status-select.status-pending {
+  background-color: #4f6bed !important;
+}
+.status-select.status-confirmed {
+  background-color: #9b6ef3 !important;
+}
+.status-select.status-start {
+  background-color: #3aa76d !important;
+}
+.status-select.status-completed {
+  background-color: #8b8b8b !important;
+}
+.status-select.status-canceled {
+  background-color: #e14b4b !important;
+}
+
+.status-select option {
+  background-color: #fff;
+  color: #333;
+}
+
+/* 페이지네이션 */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 32px;
+}
+.page-btn {
+  min-width: 36px;
+  height: 36px;
+  border: 1px solid #ddd;
+  background-color: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+.page-btn:hover:not(:disabled) {
+  background-color: #f0f4ff;
+  border-color: #4f6bed;
+  color: #4f6bed;
+}
+.page-btn.active {
+  background-color: #4f6bed;
+  color: #fff;
+  border-color: #4f6bed;
+}
+.page-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.no-data-msg {
+  padding: 60px;
+  text-align: center;
+  color: #999;
+  font-size: 15px;
+}
+
+/* --- 담당 기사 컬럼 UI 개선 추가 --- */
+
+/* 기사 이름과 재배정 버튼을 가로로 정렬 */
+.engineer-header-row {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* 이름과 버튼 사이의 적절한 간격 */
+  margin-bottom: 2px;
+}
+
+.eng-name {
+  font-size: 13.5px;
+  color: #333;
+}
+
+/* 텍스트 기반의 세련된 재배정 버튼 */
+.reassign-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: transparent;
+  border: none;
+  color: #4f6bed; /* 시스템 메인 컬러 활용 */
+  font-size: 11px;
+  font-weight: 700;
+  padding: 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  opacity: 0.7;
+}
+
+.reassign-action-btn svg {
+  margin-top: 0.5px;
+}
+
+.reassign-action-btn:hover {
+  opacity: 1;
+  text-decoration: underline;
+  transform: translateX(2px); /* 살짝 우측으로 이동하는 피드백 */
+}
+
+/* 미배정 상태 스타일 보정 */
+.eng-name.unassigned {
+  color: #bbb;
+}
+
+.sub-info.unassigned-text {
+  color: #e14b4b;
+  font-weight: 500;
+}
+.unassigned-text {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+/* ✅ 재배정 성공 시 행 강조 애니메이션 */
+.ReservationManagePage-row-highlight {
+  animation: ReservationManagePage-pulse 3s ease-out;
+  position: relative;
+  z-index: 10;
+}
+
+@keyframes ReservationManagePage-pulse {
+  0% {
+    background-color: transparent;
+  }
+  10% {
+    background-color: rgba(79, 107, 237, 0.15); /* 부드러운 푸른색 계열 강조 */
+    box-shadow: inset 4px 0 0 #4f6bed; /* 왼쪽 라인 강조 */
+  }
+  80% {
+    background-color: rgba(79, 107, 237, 0.05);
+  }
+  100% {
+    background-color: transparent;
+  }
+}

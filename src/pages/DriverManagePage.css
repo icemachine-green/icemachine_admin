@@ -1,0 +1,176 @@
+/* =========================
+   전체 컨테이너
+========================= */
+.driviermanage-container {
+  background-color: #f3f2f4;
+  height: 100%;
+  padding: 32px;
+  box-sizing: border-box;
+}
+
+.driviermanage-greeting {
+  font-size: 25px;
+  font-weight: 700;
+  margin-bottom: 30px;
+  color: #2f2f2f;
+}
+
+/* =========================
+   흰색 박스 & 테이블 레이아웃
+========================= */
+.driviermanage-table-wrapper {
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  min-height: 600px;
+  display: flex;
+  flex-direction: column;
+}
+
+.driviermanage-table {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+/* =========================
+   Grid 테이블 행 (비율 조정)
+========================= */
+.driver-table-row {
+  display: grid;
+  /* 기사번호, 기사명, 등급, 연락처, 입사일, 완료건수, 상태 */
+  grid-template-columns: 0.6fr 1fr 1fr 1.3fr 1.2fr 0.8fr 1fr;
+  align-items: center;
+  padding: 16px 0;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+  text-align: center;
+  color: #333;
+}
+
+.driver-table-head {
+  font-weight: 700;
+  color: #777;
+  background-color: #f9f9fb;
+  border-bottom: 2px solid #ddd;
+  border-radius: 8px 8px 0 0;
+}
+
+/* =========================
+   상태 배지 (디자인 통일)
+========================= */
+.status-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+  min-width: 60px;
+}
+
+.greencolor {
+  background-color: #3aa76d;
+}
+.redcolor {
+  background-color: #e14b4b;
+}
+.graycolor {
+  background-color: #8b8b8b;
+}
+
+/* =========================
+   페이지네이션 (중앙 정렬 보정)
+========================= */
+.pagination {
+  display: flex;
+  justify-content: center; /* 가로 중앙 정렬 */
+  align-items: center;
+  gap: 8px;
+  margin-top: auto; /* 테이블 하단 고정 */
+  padding-top: 30px;
+  border-top: 1px solid #f0f0f0;
+  width: 100%; /* 전체 너비 확보 */
+}
+
+.page-btn {
+  min-width: 36px;
+  height: 36px;
+  border: 1px solid #ddd;
+  background-color: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.page-btn:hover:not(:disabled) {
+  background-color: #f0f4ff;
+  border-color: #4f6bed;
+  color: #4f6bed;
+}
+
+.page-btn.active {
+  background-color: #4f6bed;
+  color: #fff;
+  border-color: #4f6bed;
+  font-weight: 700;
+}
+
+.page-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.page-btn.arrow {
+  font-weight: bold;
+  color: #4f6bed;
+  font-family: "Courier New", Courier, monospace;
+}
+
+.page-btn.arrow:disabled {
+  color: #ccc;
+}
+
+/* =========================
+   기타 유틸리티 스타일
+========================= */
+.no-data {
+  padding: 100px 0;
+  text-align: center;
+  color: #999;
+}
+
+.summary-info {
+  font-size: 14px;
+  color: #666;
+  margin-left: 15px;
+  font-weight: normal;
+}
+
+.clickable-row {
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.clickable-row:hover {
+  background-color: #f8faff;
+}
+
+.emp-name {
+  font-weight: 600;
+}
+
+.completed-count {
+  font-weight: 600;
+  color: #4f6bed;
+}
+
+.is-loading {
+  opacity: 0.5;
+  pointer-events: none;
+}

@@ -1,0 +1,215 @@
+/* 레이어 배경 */
+.ReservationDetailModal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.ReservationDetailModal-overlay.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* 모달 본체 */
+.ReservationDetailModal-content {
+  background: #fff;
+  width: 680px;
+  max-height: 90vh;
+  overflow-y: auto;
+  border-radius: 12px;
+  padding: 30px 40px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+/* 헤더 영역 */
+.ReservationDetailModal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.ReservationDetailModal-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ReservationDetailModal-header h2 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #111;
+  margin: 0;
+}
+
+.ReservationDetailModal-id-tag {
+  font-size: 1rem;
+  color: #888;
+  font-weight: 400;
+}
+
+.ReservationDetailModal-close-x {
+  font-size: 32px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: #aaa;
+  line-height: 1;
+}
+
+/* 컨텐츠 그리드 */
+.ReservationDetailModal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 25px;
+  margin-bottom: 5px;
+}
+
+.ReservationDetailModal-group label {
+  display: block;
+  font-size: 0.85rem;
+  color: #999;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+/* 텍스트 스타일 가이드 */
+.ReservationDetailModal-text-important {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #222;
+  margin: 0;
+}
+
+.ReservationDetailModal-text-bold {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 4px 0;
+}
+
+.ReservationDetailModal-text-base {
+  font-size: 0.95rem;
+  color: #444;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.ReservationDetailModal-address-text {
+  font-size: 0.95rem;
+  color: #555;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.ReservationDetailModal-text-sub {
+  font-size: 0.85rem;
+  color: #999;
+  margin: 2px 0 0 0;
+}
+
+.ReservationDetailModal-divider {
+  border: 0;
+  border-top: 1px solid #f5f5f5;
+  margin: 20px 0;
+}
+
+/* 엔지니어 정보 섹션 (눈이 편한 스타일) */
+.ReservationDetailModal-engineer-box {
+  margin-top: 25px;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 10px;
+  border: 1px solid #f0f0f0;
+}
+
+.ReservationDetailModal-engineer-label {
+  display: block;
+  font-size: 0.85rem;
+  color: #888;
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+
+.ReservationDetailModal-engineer-main {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.ReservationDetailModal-engineer-name {
+  font-size: 1.05rem;
+  color: #444;
+  font-weight: 500;
+}
+
+.ReservationDetailModal-engineer-level {
+  font-size: 0.85rem;
+  color: #999;
+  font-weight: 400;
+}
+
+.ReservationDetailModal-engineer-phone {
+  font-size: 0.95rem;
+  color: #666;
+  margin: 0;
+  font-weight: 400;
+}
+
+.ReservationDetailModal-unassigned-text {
+  color: #ff7875;
+  font-size: 0.95rem;
+  font-weight: 400;
+  margin: 0;
+}
+
+/* 푸터 버튼 */
+.ReservationDetailModal-footer {
+  display: flex;
+  gap: 12px;
+  margin-top: 30px;
+}
+
+.ReservationDetailModal-footer-btn {
+  flex: 1;
+  padding: 14px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: 0.2s;
+}
+
+.ReservationDetailModal-footer-btn.manage {
+  background: #333;
+  color: #fff;
+}
+
+.ReservationDetailModal-footer-btn.close {
+  background: #eee;
+  color: #666;
+}
+
+.ReservationDetailModal-footer-btn:hover {
+  opacity: 0.9;
+}
+
+.ReservationDetailModal-loading {
+  text-align: center;
+  padding: 60px 0;
+  color: #888;
+}

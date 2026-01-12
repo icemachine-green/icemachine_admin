@@ -1,0 +1,190 @@
+/* 레이어 및 배경 */
+.ReassignModal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.ReassignModal-card {
+  background: #fff;
+  width: 800px;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* 상단 헤더 영역 - 여백 조정 포함 */
+.ReassignModal-header {
+  padding: 28px 30px; /* 전체 패딩 증가 */
+  border-bottom: 1px solid #f0f0f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.ReassignModal-main-title {
+  margin: 0;
+  font-size: 21px;
+  font-weight: 800;
+  color: #1a1a1a;
+  letter-spacing: -0.5px;
+}
+
+.ReassignModal-sub-info-area {
+  margin-top: 14px; /* 타이틀과의 간격 확보 */
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: #777;
+}
+
+.ReassignModal-info-divider {
+  color: #eee;
+  font-weight: 300;
+}
+
+.ReassignModal-header-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.ReassignModal-status-chip {
+  background: #eff4ff;
+  color: #4f6bed;
+  padding: 8px 16px;
+  border-radius: 30px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.ReassignModal-x-button {
+  background: none;
+  border: none;
+  font-size: 30px;
+  color: #ccc;
+  cursor: pointer;
+  line-height: 1;
+}
+
+/* 테이블 레이아웃 구조 */
+.ReassignModal-content {
+  display: flex;
+  flex-direction: column;
+}
+
+/* 컬럼 너비 고정 (헤더/바디 100% 일치) */
+.ReassignModal-col-1 {
+  width: 30%;
+  text-align: left;
+}
+.ReassignModal-col-2 {
+  width: 20%;
+  text-align: center;
+}
+.ReassignModal-col-3 {
+  width: 18%;
+  text-align: center;
+}
+.ReassignModal-col-4 {
+  width: 17%;
+  text-align: center;
+}
+.ReassignModal-col-5 {
+  width: 15%;
+  text-align: center;
+}
+
+/* 고정 헤더 */
+.ReassignModal-list-header {
+  display: flex;
+  padding: 14px 30px;
+  background: #f9fafb;
+  border-bottom: 1px solid #eee;
+  font-weight: 700;
+  color: #666;
+  font-size: 14px;
+  /* 스크롤바 너비만큼 우측 마진 확보 (정렬 핵심) */
+  padding-right: 36px;
+}
+
+/* 내부 스크롤 바디 */
+.ReassignModal-list-body {
+  max-height: 450px;
+  overflow-y: scroll; /* 항상 노출하여 헤더와의 너비 차이 방지 */
+  padding: 0 30px;
+}
+
+.ReassignModal-list-row {
+  display: flex;
+  align-items: center;
+  padding: 18px 0;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+/* 기사 정보 */
+.ReassignModal-eng-box {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.ReassignModal-eng-name {
+  font-weight: 700;
+  color: #333;
+  font-size: 16px;
+}
+
+.ReassignModal-eng-phone {
+  font-size: 13px;
+  color: #999;
+}
+
+/* 버튼 및 강조색 */
+.ReassignModal-action-btn {
+  background: #4f6bed;
+  color: #fff;
+  border: none;
+  padding: 9px 20px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.ReassignModal-action-btn:hover {
+  background: #3855d6;
+}
+.ReassignModal-action-btn:disabled {
+  background: #ddd;
+  cursor: not-allowed;
+}
+
+.ReassignModal-bold {
+  font-weight: 700;
+  font-size: 15px;
+}
+.ReassignModal-green {
+  color: #27ae60;
+}
+.ReassignModal-blue {
+  color: #4f6bed;
+}
+
+.ReassignModal-state-msg {
+  padding: 80px 0;
+  text-align: center;
+  color: #bbb;
+  font-size: 15px;
+}
