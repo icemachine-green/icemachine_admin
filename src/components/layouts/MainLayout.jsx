@@ -16,7 +16,12 @@ export default function MainLayout() {
   const { delayedItems } = useSelector((state) => state.delayAlert);
 
   const [isOpen, setIsOpen] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
+
+  // 초기값 로드: LocalStorage에 'delayMuted'가 'true'라면 true, 아니면 false
+  const [isMuted, setIsMuted] = useState(() => {
+    return localStorage.getItem("delayMuted") === "true";
+  });
+
   const dropdownRef = useRef(null);
 
   useEffect(() => {
@@ -28,6 +33,11 @@ export default function MainLayout() {
       return () => clearInterval(timer);
     }
   }, [dispatch, admin]);
+
+  // isMuted 상태가 바뀔 때마다 LocalStorage에 저장
+  useEffect(() => {
+    localStorage.setItem("delayMuted", isMuted);
+  }, [isMuted]);
 
   const delayCount = delayedItems?.length || 0;
 
