@@ -25,7 +25,7 @@ export default function ReassignModal({
     return () => dispatch(resetReassignState());
   }, [isOpen, reservationData?.id, dispatch]);
 
-  const availableList = recommendedEngineers.filter((eng) => !eng.isAvailable);
+  const availableList = recommendedEngineers.filter((eng) => eng.isAvailable);
 
   const handleAssign = async (engineerId, engineerName) => {
     if (!window.confirm(`[${engineerName}] 기사님을 배정하시겠습니까?`)) return;
@@ -69,7 +69,7 @@ export default function ReassignModal({
           </div>
           <div className="ReassignModal-header-right">
             <div className="ReassignModal-status-chip">
-              가용 기사 <strong>{availableList.length}</strong>
+              가용 가능 <strong>{availableList.length}</strong>
             </div>
             <button className="ReassignModal-x-button" onClick={onClose}>
               &times;
