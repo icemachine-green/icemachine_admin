@@ -8,6 +8,7 @@ import {
   setUserFilters,
   setCurrentPage,
 } from "../store/slices/adminUserManageSlice";
+import UserDetailModal from "./UserDetailModal.jsx";
 import "./CustomerManagePage.css";
 
 export default function CustomerManagePage() {
@@ -105,7 +106,7 @@ export default function CustomerManagePage() {
               value={searchInput.sort}
               onChange={handleSortChange}
             >
-              <option value="latest">최신 가입순</option>
+              <option value="latest">고객 ID 순</option>
               <option value="reservation">예약 많은순</option>
               <option value="business">매장 많은순</option>
             </select>
@@ -119,7 +120,7 @@ export default function CustomerManagePage() {
       <section className="customermanage-table-wrapper">
         <div className="customermanage-table">
           <div className="customer-table-row customer-table-head">
-            <div>번호</div>
+            <div>고객 ID</div>
             <div>고객명</div>
             <div>연락처</div>
             <div>등록 매장</div>
@@ -212,6 +213,7 @@ export default function CustomerManagePage() {
               </button>
             </div>
           )}
+          <UserDetailModal />
         </div>
       </section>
     </div>

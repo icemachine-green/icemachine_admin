@@ -194,3 +194,27 @@
   opacity: 0.3;
   cursor: not-allowed;
 }
+
+/* 기존 CSS 하단에 추가 */
+
+.table-content-area {
+  min-height: 480px; /* 8줄 기준 높이 고정 */
+  position: relative;
+}
+
+.loading-row,
+.no-data-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 400px;
+  color: #888;
+  font-size: 15px;
+  width: 100%;
+}
+
+.is-loading {
+  opacity: 0.6;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
