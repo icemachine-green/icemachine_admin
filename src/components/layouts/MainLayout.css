@@ -1,4 +1,3 @@
-/* MainLayout.css */
 .main-layout-container {
   display: flex;
   width: 100%;
@@ -10,7 +9,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  min-width: 0; /* 내부 요소 넘침 방지 */
+  min-width: 0;
 }
 
 .header {
@@ -25,7 +24,7 @@
 }
 
 .header h1 {
-  font-size: 32px; /* 가독성을 위해 살짝 조절 */
+  font-size: 32px;
   margin: 0;
   font-weight: 700;
 }
@@ -36,9 +35,73 @@
   gap: 20px;
 }
 
-.header-icon {
-  width: 32px;
+.header-delay-monitor-btn {
+  padding: 8px 16px;
+  background-color: #f0f0f0;
+  color: #666;
+  border-radius: 8px;
+  border: none;
+  font-weight: bold;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.header-delay-monitor-btn.active {
+  background-color: #ff4d4f;
+  color: #fff;
+}
+
+.delay-badge {
+  background: #ffffff;
+  color: #ff4d4f;
+  padding: 1px 9px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 800;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header-alarm-toggle {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  background: #fff;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+}
+
+.header-alarm-toggle.muted {
+  background: #fff1f0;
+  border-color: #ffa39e;
+}
+
+.header-alarm-toggle.muted .header-icon {
+  filter: grayscale(1);
+  opacity: 0.4;
+}
+
+.mute-slash {
+  position: absolute;
+  width: 28px;
+  height: 2px;
+  background: #ff4d4f;
+  transform: rotate(-45deg);
+  border-radius: 2px;
+  z-index: 1;
+}
+
+.header-icon {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
 }
 
 .header-user {
@@ -48,8 +111,9 @@
   gap: 10px;
 }
 
-.admin-icon {
-  width: 40px;
+.admin-name {
+  font-weight: 600;
+  color: #333;
 }
 
 .content {
@@ -58,109 +122,68 @@
   overflow-y: auto;
 }
 
-/* 드롭다운 & 모달 스타일은 기존 주신 것과 동일하게 유지하시면 됩니다 */
 .admin-dropdown {
   position: absolute;
-  top: 60px;
+  top: 50px;
   right: 0;
-  width: 200px;
+  width: 160px;
   background: white;
   border-radius: 8px;
-  padding: 15px;
+  padding: 10px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   z-index: 100;
 }
 
 .logout-btn {
   width: 100%;
-  padding: 8px;
-  background-color: #007aff;
-  color: white;
+  padding: 10px;
+  background-color: #f5f5f5;
+  color: #333;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  font-weight: 500;
+  text-align: left;
 }
 
-/* 모달 애니메이션 및 오버레이 */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-/* =========================
-   🔽 화살표 토글 (개선됨)
-========================= */
 .arrow-toggle {
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
   background: none;
   border: none;
   cursor: pointer;
   position: relative;
-  padding: 0;
 }
 
-/* chevron 모양 */
 .arrow-toggle::before {
   content: "";
   position: absolute;
-  top: 5px;
+  top: 8px;
   left: 8px;
-  width: 10px;
-  height: 10px;
-  border-right: 3px solid #555;
-  border-bottom: 3px solid #555;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid #555;
+  border-bottom: 2px solid #555;
   transform: rotate(45deg);
-  transition: transform 0.25s ease;
 }
 
-/* 열렸을 때 위로 */
 .arrow-toggle.open::before {
   transform: rotate(-135deg);
 }
 
-/* =========================================
-   🚨 작업 지연 발생 시 시각 피드백 (헤더 강조)
-   ========================================= */
-
-/* 1. 헤더 색상 및 그림자 애니메이션 */
 @keyframes header-emergency-pulse {
   0% {
     background-color: #ffffff;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   }
   50% {
     background-color: #fff1f0;
-    box-shadow: 0 0 20px rgba(255, 77, 79, 0.4);
   }
   100% {
     background-color: #ffffff;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   }
 }
 
-/* 2. body에 visual-alert-active 클래스가 있을 때 헤더 스타일 변경 */
 body.visual-alert-active .header {
   animation: header-emergency-pulse 1.5s infinite ease-in-out;
-  border-bottom: 2px solid #ff4d4f; /* 헤더 하단 선을 빨간색으로 */
-}
-
-/* 3. 사이드바나 컨텐츠 영역에도 붉은 기운 추가 (선택) */
-body.visual-alert-active .main-layout-container {
-  border: 4px solid #ff4d4f;
-  box-sizing: border-box;
-}
-
-/* 4. 지연 감시 버튼 더 강하게 깜빡이기 */
-body.visual-alert-active .header-delay-monitor-btn {
-  transform: scale(1.05);
-  box-shadow: 0 0 15px rgba(255, 77, 79, 0.6);
+  border-bottom: 2px solid #ff4d4f;
 }
