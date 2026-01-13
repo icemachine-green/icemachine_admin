@@ -27,7 +27,7 @@ const processQueue = (error, token = null) => {
 
 const axiosInstance = axios.create({
   // 배포 시에는 VITE_API_URL을 사용.
-  baseURL: import.meta.env.VITE_API_URL || "/",
+  baseURL: import.meta.env.VITE_SERVER_URL || "/",
   headers: {
     "Content-Type": "application/json",
   },
