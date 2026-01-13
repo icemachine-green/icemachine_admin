@@ -26,13 +26,23 @@ const processQueue = (error, token = null) => {
 };
 
 const axiosInstance = axios.create({
-  // 프록시를 사용하므로 도메인을 명시하지 않고 상대 경로를 기준점으로 잡습니다.
-  baseURL: "/",
+  // 배포 시에는 VITE_API_URL을 사용.
+  baseURL: import.meta.env.VITE_SERVER_URL || "/",
   headers: {
     "Content-Type": "application/json",
   },
   withCredentials: true,
 });
+
+//  개발 환경
+// const axiosInstance = axios.create({
+//   // 프록시를 사용하므로 도메인을 명시하지 않고 상대 경로를 기준점
+//   baseURL: "/",
+//   headers: {
+//     "Content-Type": "application/json",
+//   },
+//   withCredentials: true,
+// });
 
 axiosInstance.interceptors.request.use(
   async (config) => {

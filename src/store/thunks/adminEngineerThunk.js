@@ -7,6 +7,7 @@ export const fetchEngineers = createAsyncThunk(
   async (params, { rejectWithValue }) => {
     try {
       const response = await adminEngineerApi.getEngineers(params);
+      console.log("Thunk API 응답 원본:", response.data);
       return response.data.data; // { items, total, summary }
     } catch (error) {
       return rejectWithValue(
